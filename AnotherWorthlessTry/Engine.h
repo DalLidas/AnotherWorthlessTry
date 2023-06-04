@@ -1,6 +1,9 @@
 #pragma once
 
+#define DEBUG
+
 #include "WindowConteiner.h"
+#include "Input/Keyboard/KeyboardClass.h"
 
 class Engine : WindowContainer{
 public:
@@ -13,6 +16,7 @@ public:
     );
 
     BOOL ProcessMessages();
+    void Update();
 
 private:
 

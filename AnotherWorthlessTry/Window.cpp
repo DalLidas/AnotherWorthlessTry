@@ -116,7 +116,7 @@ LRESULT CALLBACK HandleMessageSetup(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 
 
 void Window::RegisterWindowClass(){
-    WNDCLASSEX wc;
+    WNDCLASSEX wc{0};
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wc.lpfnWndProc = HandleMessageSetup;
     wc.cbClsExtra = 0;

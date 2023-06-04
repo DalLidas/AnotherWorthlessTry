@@ -3,20 +3,21 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "DirectXTK.lib")
 
-
-int CALLBACK wWinMain(
-    HINSTANCE hInstance,
-    HINSTANCE hPrevInstance,
-    LPWSTR lpCmdLine,
-    int nShowCmd)
+int APIENTRY wWinMain(
+    _In_ HINSTANCE hInstance,
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_ LPWSTR    lpCmdLine,
+    _In_ int       nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     Engine engine;
-    engine.Initialize(hInstance, "MyWindow", "MyWindowClass", 800, 600);
+    engine.Initialize(hInstance, "MyEngine", "MyEngineClass", 800, 600);
 
-    while (engine.ProcessMessages());
+    while (engine.ProcessMessages()) {
+        engine.Update();
+    }
     
 	return 0;
 }
