@@ -18,6 +18,7 @@ public:
 
     BOOL ProcessMessages();
     void Update();
+    void RenderFrame();
 
 private:
 

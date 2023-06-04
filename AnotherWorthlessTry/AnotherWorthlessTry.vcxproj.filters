@@ -63,6 +63,9 @@
     <ClCompile Include="GFX\AdapterReader.cpp">
       <Filter>GFX</Filter>
     </ClCompile>
+    <ClCompile Include="GFX\Shaders.cpp">
+      <Filter>GFX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StringConverter.h">
@@ -98,5 +101,19 @@
     <ClInclude Include="GFX\AdapterReader.h">
       <Filter>GFX</Filter>
     </ClInclude>
+    <ClInclude Include="GFX\Vertex.h">
+      <Filter>GFX</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\Shaders.h">
+      <Filter>GFX</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="GFX\VertexShader.hlsl">
+      <Filter>GFX</Filter>
+    </FxCompile>
+    <FxCompile Include="GFX\PixelShader.hlsl">
+      <Filter>GFX</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
