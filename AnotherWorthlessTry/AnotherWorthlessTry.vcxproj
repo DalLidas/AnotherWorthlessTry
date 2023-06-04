@@ -147,13 +147,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EnteryPoint.cpp" />
     <ClCompile Include="ExceptionLoger.cpp" />
     <ClCompile Include="StringConverter.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="WindowConteiner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExceptionLoger.h" />
+    <ClInclude Include="Engine.h" />
+    <ClInclude Include="WindowConteiner.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="StringConverter.h" />
   </ItemGroup>

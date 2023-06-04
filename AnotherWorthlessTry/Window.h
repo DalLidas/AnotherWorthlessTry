@@ -1,21 +1,24 @@
 #pragma once
 #include <windows.h>
-#include "StringConverter.h"
 #include "ExceptionLoger.h"
+
+class WindowContainer;
 
 class Window {
 public:
     BOOL Initialize(
+        WindowContainer* pWindowContainer,
         HINSTANCE hInstance,
         std::string windowName,
         std::string windowClass,
-        INT height,
-        INT width 
+        INT width,
+        INT height
     );
 
     ~Window();
 
     BOOL ProcessMessages();
+    
     HWND GetHWND() const;
 
 private:
@@ -30,6 +33,6 @@ private:
     std::string windowClass = "";
     std::wstring wWindowClass = L"";
 
-    INT height = 0;
     INT width = 0;
+    INT height = 0;
 };

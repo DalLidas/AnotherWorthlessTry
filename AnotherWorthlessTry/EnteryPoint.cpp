@@ -1,6 +1,4 @@
-#include <Windows.h>
-#include "Window.h"
-#include "ExceptionLoger.h"
+#include "Engine.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "DirectXTK.lib")
@@ -15,10 +13,10 @@ int CALLBACK wWinMain(
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    Window window;
-    window.Initialize(hInstance, "MyWindow", "MyWindowClass", 600, 800);
+    Engine engine;
+    engine.Initialize(hInstance, "MyWindow", "MyWindowClass", 800, 600);
 
-    while (window.ProcessMessages());
+    while (engine.ProcessMessages());
     
 	return 0;
 }
