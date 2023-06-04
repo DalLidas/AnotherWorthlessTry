@@ -60,6 +60,9 @@
     <ClCompile Include="GFX\GFX.cpp">
       <Filter>GFX</Filter>
     </ClCompile>
+    <ClCompile Include="GFX\AdapterReader.cpp">
+      <Filter>GFX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StringConverter.h">
@@ -90,6 +93,9 @@
       <Filter>Input\Mouse</Filter>
     </ClInclude>
     <ClInclude Include="GFX\GFX.h">
+      <Filter>GFX</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\AdapterReader.h">
       <Filter>GFX</Filter>
     </ClInclude>
   </ItemGroup>

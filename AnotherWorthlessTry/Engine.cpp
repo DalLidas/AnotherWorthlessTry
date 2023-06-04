@@ -8,7 +8,16 @@ BOOL Engine::Initialize(HINSTANCE hInstance, std::string windowName, std::string
     //keyboard.EnableAutoRepeatKeys();
     keyboard.DisableAutoRepeatKeys();
 
-    return this->window.Initialize(this, hInstance, windowName, windowClass, width, height);
+    if (!this->window.Initialize(this, hInstance, windowName, windowClass, width, height)) {
+        return false;
+    }
+
+    if (!gfx.Initialization(window.GetHWND(), width, height)) {
+        return false;
+    }
+
+    return true;
+
 }
 
 BOOL Engine::ProcessMessages()

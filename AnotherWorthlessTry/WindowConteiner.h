@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "Input/Keyboard/KeyboardClass.h"
 #include "Input/Mouse/MouseClass.h"
+#include "GFX/GFX.h"
 
 class WindowContainer {
 public:
@@ -15,6 +16,7 @@ protected:
 	Window window;
 	KeyboardClass keyboard;
 	MouseClass mouse;
+	GFX gfx;
 
 private:
 

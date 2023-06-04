@@ -8,7 +8,7 @@ WindowContainer::WindowContainer()
 		//
 		//https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/hid-architecture#hid-clients-supported-in-windows
 		//
-		RAWINPUTDEVICE rawData;
+		RAWINPUTDEVICE rawData = { 0 };
 
 		rawData.usUsagePage = 0x01; //Mouse
 		rawData.usUsage = 0x02;
@@ -146,7 +146,7 @@ LRESULT WindowContainer::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 		//
 		//https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getrawinputdata
 		//
-		UINT dataSize;
+		UINT dataSize = 0;
 		GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, NULL, &dataSize, sizeof(RAWINPUTHEADER)); //Need to populate data size first
 
 		if (dataSize > 0)
