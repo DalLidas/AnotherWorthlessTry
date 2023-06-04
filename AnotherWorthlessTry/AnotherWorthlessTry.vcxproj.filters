@@ -11,9 +11,6 @@
     <Filter Include="Input\Mouse">
       <UniqueIdentifier>{0238f7d3-e705-4118-81e5-83665a97c26d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Egine">
-      <UniqueIdentifier>{8f18ed25-7d98-414c-945a-683ce8b87d44}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -24,6 +21,9 @@
     </Filter>
     <Filter Include="Input\Keyboard">
       <UniqueIdentifier>{5118c95e-7279-47d5-ace1-ef4f4a02293b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GFX">
+      <UniqueIdentifier>{747db3f1-f9d4-4183-8bda-f111d1cb004f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +51,15 @@
     <ClCompile Include="Input\Keyboard\KeyboardEvent.cpp">
       <Filter>Input\Keyboard</Filter>
     </ClCompile>
+    <ClCompile Include="Input\Mouse\MouseClass.cpp">
+      <Filter>Input\Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\Mouse\MouseEvent.cpp">
+      <Filter>Input\Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="GFX\GFX.cpp">
+      <Filter>GFX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StringConverter.h">
@@ -73,6 +82,15 @@
     </ClInclude>
     <ClInclude Include="Input\Keyboard\KeyboardEvent.h">
       <Filter>Input\Keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Mouse\MouseClass.h">
+      <Filter>Input\Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Mouse\MouseEvent.h">
+      <Filter>Input\Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\GFX.h">
+      <Filter>GFX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

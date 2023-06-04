@@ -19,7 +19,7 @@ BOOL Engine::ProcessMessages()
 void Engine::Update()
 {
 
-#ifdef DEBUG
+#ifdef INPUT_DEBUG_MSG
     while (!keyboard.CharBufferIsEmpty()) {
         unsigned char ch = keyboard.ReadChar();
         std::string outmsg = "Char: ";
@@ -46,7 +46,35 @@ void Engine::Update()
         outmsg += "\n";
         OutputDebugStringA(outmsg.c_str());
     }
+
+    /*
+    while (!mouse.EventBufferIsEmpty()) {
+        MouseEvent me = mouse.ReadEvent();
+
+        std::string outmsg = "";
+        outmsg += "(X:" + std::to_string(me.GetPosX()) + "||";
+        outmsg += "Y:" + std::to_string(me.GetPosX()) + ")\n";
+
+        OutputDebugStringA(outmsg.c_str());
+    }
+    */
+
+    while (!mouse.EventBufferIsEmpty()) {
+        MouseEvent me = mouse.ReadEvent();
+
+        if (me.GetType() == MouseEvent::EventType::RAW_MOVE) {
+            std::string outmsg = "";
+            outmsg += "(X:" + std::to_string(me.GetPosX()) + "||";
+            outmsg += "Y:" + std::to_string(me.GetPosX()) + ")\n";
+
+            OutputDebugStringA(outmsg.c_str());
+        }
+
+    }
+
 #endif // DEBUG
 
+
+    
     
 }
