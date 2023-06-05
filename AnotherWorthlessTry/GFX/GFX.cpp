@@ -11,6 +11,7 @@ bool GFX::Initialize(HWND hwnd, int width, int height)
 	if (!InitializeScene())
 		return false;
 
+
 	return true;
 }
 
@@ -30,7 +31,7 @@ void GFX::RenderFrame()
 	this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
 
 
-	//this->deviceContext->Draw(3, 0);
+	this->deviceContext->Draw(3, 0);
 
 	this->swapChain->Present(1, NULL);
 }
@@ -115,8 +116,8 @@ bool GFX::InitializeDirectX11(HWND hwnd, int width, int height)
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = width;
-	viewport.Height = height;
+	viewport.Width = static_cast<FLOAT>(width);
+	viewport.Height = static_cast<FLOAT>(height);
 
 	//Set the Viewport
 	this->deviceContext->RSSetViewports(1, &viewport);
