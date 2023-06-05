@@ -81,7 +81,7 @@ void Engine::Update()
 
     }
 
-#endif // DEBUG
+#endif // INPUT_DEBUG_MSG
 
     
 }

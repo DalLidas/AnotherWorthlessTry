@@ -22,6 +22,7 @@ void GFX::RenderFrame()
 
 	this->deviceContext->IASetInputLayout(this->vertexShader.GetInputLayout());
 	this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	this->deviceContext->RSSetState(this->resterazerState.Get());
 
 	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
 	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
@@ -42,7 +43,7 @@ bool GFX::InitializeDirectX11(HWND hwnd, int width, int height)
 
 	if (adapters.size() < 1)
 	{
-		ExceptionLoger::ExceptionCall("No IDXGI Adapters found.");
+		ExceptionLoger::ExceptionCall("IDXGI lost Adapters exception");
 		return false;
 	}
 
@@ -74,37 +75,38 @@ bool GFX::InitializeDirectX11(HWND hwnd, int width, int height)
 	//https://learn.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-d3d11createdeviceandswapchain?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(D3D11%252FD3D11CreateDeviceAndSwapChain)%3Bk(D3D11CreateDeviceAndSwapChain)%3Bk(DevLang-C%252B%252B)%3Bk(TargetOS-Windows)%26rd%3Dtrue
 	//
 	HRESULT hr;
-	hr = D3D11CreateDeviceAndSwapChain(adapters[0].pAdapter, //IDXGI Adapter
+	hr = D3D11CreateDeviceAndSwapChain(
+		adapters[0].pAdapter,
 		D3D_DRIVER_TYPE_UNKNOWN,
-		NULL, //FOR SOFTWARE DRIVER TYPE
-		NULL, //FLAGS FOR RUNTIME LAYERS
-		NULL, //FEATURE LEVELS ARRAY
-		0, //# OF FEATURE LEVELS IN ARRAY
+		NULL, 
+		NULL, 
+		NULL, 
+		0, 
 		D3D11_SDK_VERSION,
-		&scd, //Swapchain description
-		this->swapChain.GetAddressOf(), //Swapchain Address
-		this->device.GetAddressOf(), //Device Address
-		NULL, //Supported feature level
-		this->deviceContext.GetAddressOf()); //Device Context Address
+		&scd, 
+		this->swapChain.GetAddressOf(), 
+		this->device.GetAddressOf(), 
+		NULL, 
+		this->deviceContext.GetAddressOf());
 
 	if (FAILED(hr))
 	{
-		ExceptionLoger::ExceptionCall(hr, "Failed to create device and swapchain.");
+		ExceptionLoger::ExceptionCall(hr, "Created device and swapchain exception");
 		return false;
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
 	hr = this->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
-	if (FAILED(hr)) //If error occurred
+	if (FAILED(hr)) 
 	{
-		ExceptionLoger::ExceptionCall(hr, "GetBuffer Failed.");
+		ExceptionLoger::ExceptionCall(hr, "Get buffer exception");
 		return false;
 	}
 
 	hr = this->device->CreateRenderTargetView(backBuffer.Get(), NULL, this->renderTargetView.GetAddressOf());
-	if (FAILED(hr)) //If error occurred
+	if (FAILED(hr)) 
 	{
-		ExceptionLoger::ExceptionCall(hr, "Failed to create render target view.");
+		ExceptionLoger::ExceptionCall(hr, "Created render target view exception");
 		return false;
 	}
 
@@ -121,6 +123,19 @@ bool GFX::InitializeDirectX11(HWND hwnd, int width, int height)
 
 	//Set the Viewport
 	this->deviceContext->RSSetViewports(1, &viewport);
+
+	D3D11_RASTERIZER_DESC resterazerDesc;
+	ZeroMemory(&resterazerDesc, sizeof(resterazerDesc));
+
+	resterazerDesc.FillMode = D3D11_FILL_SOLID;
+	resterazerDesc.CullMode = D3D11_CULL_BACK;
+
+	hr = this->device->CreateRasterizerState(&resterazerDesc, this->resterazerState.GetAddressOf());
+	if (FAILED(hr))
+	{
+		ExceptionLoger::ExceptionCall(hr, "Created rasterizer state exception");
+		return false;
+	}
 
 	return true;
 }
@@ -171,7 +186,7 @@ bool GFX::InitializeScene()
 	HRESULT hr = this->device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->vertexBuffer.GetAddressOf());
 	if (FAILED(hr))
 	{
-		ExceptionLoger::ExceptionCall(hr, "Failed to create vertex buffer.");
+		ExceptionLoger::ExceptionCall(hr, "Created vertex buffer exception");
 		return false;
 	}
 
