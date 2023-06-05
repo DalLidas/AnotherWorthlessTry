@@ -12,7 +12,7 @@ BOOL Engine::Initialize(HINSTANCE hInstance, std::string windowName, std::string
         return false;
     }
 
-    if (!gfx.Initialization(window.GetHWND(), width, height)) {
+    if (!gfx.Initialize(window.GetHWND(), width, height)) {
         return false;
     }
 

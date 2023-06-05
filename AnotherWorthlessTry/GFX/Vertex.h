@@ -2,9 +2,12 @@
 
 #include <DirectXMath.h>
 
-struct Vertex {
-	Vertex(){}
-	Vertex(float x, float y) : pos(x, y) {}
+struct Vertex
+{
+	Vertex() {}
+	Vertex(float x, float y, float r, float g, float b)
+		: pos(x, y), color(r, g, b) {}
 
-	DirectX::XMFLOAT2 pos { 0, 0 };
+	DirectX::XMFLOAT2 pos;
+	DirectX::XMFLOAT3 color;
 };

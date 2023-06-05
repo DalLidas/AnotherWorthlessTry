@@ -2,15 +2,17 @@
 
 #include "AdapterReader.h"
 #include "Shaders.h"
+#include "Vertex.h"
 
 class GFX {
 public: 
-	BOOL Initialization(HWND hwnd, INT width, INT height);
+	bool Initialize(HWND hwnd, INT width, INT height);
 	void RenderFrame();
 
 private:
-	BOOL InitializeDirectX11(HWND hwnd, INT width, INT height);
-	BOOL InitializeShaders();
+	bool InitializeDirectX11(HWND hwnd, INT width, INT height);
+	bool InitializeShaders();
+	bool InitializeScene();
 
 	Microsoft::WRL::ComPtr<ID3D11Device> device = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext = nullptr;
@@ -19,4 +21,6 @@ private:
 	
 	VertexShader vertexShader;
 	PixelShader pixelShader;
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer = nullptr;
 };
