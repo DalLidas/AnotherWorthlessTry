@@ -3,6 +3,8 @@
 #include "AdapterReader.h"
 #include "Shaders.h"
 #include "Vertex.h"
+#include <SpriteBatch.h>
+#include <SpriteFont.h>
 
 class GFX {
 public: 
@@ -30,6 +32,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState = nullptr;
 
 	Microsoft::WRL::ComPtr <ID3D11RasterizerState> resterazerState = nullptr;
+
+	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
+	std::unique_ptr<DirectX::SpriteFont> spriteFont;
 
 	INT windowWidth = 0;
 	INT windowHeight = 0;
