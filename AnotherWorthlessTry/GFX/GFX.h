@@ -5,7 +5,7 @@
 
 class GFX {
 public: 
-	BOOL Initialization(HWND hwnd, INT width, INT height);
+	BOOL Initialize(HWND hwnd, INT width, INT height);
 	void RenderFrame();
 
 private:

@@ -1,9 +1,14 @@
 #include "GFX.h"
 
-BOOL GFX::Initialization(HWND hwnd, INT width, INT height)
+BOOL GFX::Initialize(HWND hwnd, INT width, INT height)
 {
 	if (!InitializeDirectX11(hwnd, width, height)) {
 		ExceptionLoger::ExceptionCall(GetLastError(), "Initialization DirectX11 exception");
+		return false;
+	}
+
+	if (!InitializeShaders()) {
+		ExceptionLoger::ExceptionCall(GetLastError(), "Initialization Shaders exception");
 		return false;
 	}
 
@@ -107,26 +112,6 @@ BOOL GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
 
 BOOL GFX::InitializeShaders()
 {
-	std::wstring shaderfolder = L"";
-#pragma region DetermineShaderPath
-	if (IsDebuggerPresent() == TRUE)
-	{
-#ifdef _DEBUG //Debug Mode
-#ifdef _WIN64 //x64
-		shaderfolder = L"..\\x64\\Debug\\";
-#else  //x86 (Win32)
-		shaderfolder = L"..\\Debug\\";
-#endif
-#else //Release Mode
-#ifdef _WIN64 //x64
-		shaderfolder = L"..\\x64\\Release\\";
-#else  //x86 (Win32)
-		shaderfolder = L"..\\Release\\";
-#endif
-#endif
-	}
-#pragma endregion
-
 	D3D11_INPUT_ELEMENT_DESC layout[] = 
 	{
 		{"POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_INSTANCE_DATA, 0 }
@@ -134,11 +119,11 @@ BOOL GFX::InitializeShaders()
 
 	UINT numElements = ARRAYSIZE(layout);
 
-	if (!vertexShader.Initialize(this->device, shaderfolder + L"vertexShader.cso", layout, numElements))
+	if (!vertexShader.Initialize(this->device, L"VertexShader.cso", layout, numElements))
 		return false;
 
 	
-	if (!pixelShader.Initialize(this->device, shaderfolder + L"pixelShader.cso"))
+	if (!pixelShader.Initialize(this->device,  L"PixelShader.cso"))
 		return false;
 	
 
