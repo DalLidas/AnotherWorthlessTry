@@ -22,7 +22,15 @@ private:
 	VertexShader vertexShader;
 	PixelShader pixelShader;
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer1 = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer2 = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState = nullptr;
 
 	Microsoft::WRL::ComPtr <ID3D11RasterizerState> resterazerState = nullptr;
+
+	INT windowWidth = 0;
+	INT windowHeight = 0;
 };

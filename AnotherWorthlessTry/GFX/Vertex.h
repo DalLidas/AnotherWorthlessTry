@@ -4,12 +4,11 @@
 
 struct Vertex
 {
-	Vertex()
-		: pos(0.0f, 0.0f), color(0.0f, 0.0f, 0.0f) {}
+	Vertex() = default;
 
-	Vertex(float x, float y, float r, float g, float b)
-		: pos(x, y), color(r, g, b) {}
+	Vertex(float xx, float yy, float zz, float rr, float gg, float bb)
+		: pos(xx, yy, zz), color(rr, gg, bb) {}
 
-	DirectX::XMFLOAT2 pos;
-	DirectX::XMFLOAT3 color;
+	DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT3 color = { 0.0f, 0.0f, 0.0f };
 };
