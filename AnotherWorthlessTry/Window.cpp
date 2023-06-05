@@ -26,7 +26,7 @@ BOOL Window::Initialize(WindowContainer* pWindowContainer, HINSTANCE hInstance, 
         pWindowContainer
      );
 
-    if (FAILED(this->handle)){
+    if (this->handle == NULL){
         ExceptionLoger::ExceptionCall(GetLastError(), "CreateWindowEx dont create windows class");
         return false;
     }
@@ -39,7 +39,7 @@ BOOL Window::Initialize(WindowContainer* pWindowContainer, HINSTANCE hInstance, 
 }
 
 Window::~Window() {
-    if (SUCCEEDED(this->handle)) {
+    if (this->handle != NULL) {
         UnregisterClass(this->wWindowClass.c_str(), this->hInstance);
         DestroyWindow(this->handle);
     }

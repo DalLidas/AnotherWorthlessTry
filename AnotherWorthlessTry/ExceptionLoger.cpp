@@ -7,6 +7,12 @@ void ExceptionLoger::ExceptionCall(std::string message)
 	MessageBoxA(NULL, exceptionMessage.c_str(), "Error", NULL);
 }
 
+void ExceptionLoger::ExceptionCall(std::wstring message)
+{
+	std::wstring exceptionMessage = L"Exeption: " + message;
+	MessageBoxW(NULL, exceptionMessage.c_str(), L"Error", NULL);
+}
+
 void ExceptionLoger::ExceptionCall(HRESULT hr, std::string message)
 {
 	_com_error exception(hr);

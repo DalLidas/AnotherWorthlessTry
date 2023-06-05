@@ -1,33 +1,47 @@
 #include "GFX.h"
 
-BOOL GFX::Initialize(HWND hwnd, INT width, INT height)
+bool GFX::Initialize(HWND hwnd, int width, int height)
 {
-	if (!InitializeDirectX11(hwnd, width, height)) {
-		ExceptionLoger::ExceptionCall(GetLastError(), "Initialization DirectX11 exception");
+	if (!InitializeDirectX11(hwnd, width, height))
 		return false;
-	}
 
-	if (!InitializeShaders()) {
-		ExceptionLoger::ExceptionCall(GetLastError(), "Initialization Shaders exception");
+	if (!InitializeShaders())
 		return false;
-	}
+
+	if (!InitializeScene())
+		return false;
 
 	return true;
 }
 
 void GFX::RenderFrame()
 {
-	float bgcolor[] = { 0.0f, 1.0f, 1.0f, 1.0f };
+	float bgcolor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
-	this->swapChain->Present(1, 0);
+
+	this->deviceContext->IASetInputLayout(this->vertexShader.GetInputLayout());
+	this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
+	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
+
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
+
+
+	//this->deviceContext->Draw(3, 0);
+
+	this->swapChain->Present(1, NULL);
 }
 
-BOOL GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
+bool GFX::InitializeDirectX11(HWND hwnd, int width, int height)
 {
 	std::vector<AdapterData> adapters = AdapterReader::GetAdapterData();
 
-	if (adapters.size() < 1) {
-		ExceptionLoger::ExceptionCall("Lost adapter exception");
+	if (adapters.size() < 1)
+	{
+		ExceptionLoger::ExceptionCall("No IDXGI Adapters found.");
 		return false;
 	}
 
@@ -59,62 +73,63 @@ BOOL GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
 	//https://learn.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-d3d11createdeviceandswapchain?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(D3D11%252FD3D11CreateDeviceAndSwapChain)%3Bk(D3D11CreateDeviceAndSwapChain)%3Bk(DevLang-C%252B%252B)%3Bk(TargetOS-Windows)%26rd%3Dtrue
 	//
 	HRESULT hr;
-	hr = D3D11CreateDeviceAndSwapChain(
-		adapters[0].pAdapter,
+	hr = D3D11CreateDeviceAndSwapChain(adapters[0].pAdapter, //IDXGI Adapter
 		D3D_DRIVER_TYPE_UNKNOWN,
-		NULL,
-		NULL, 
-		NULL,
-		0,
+		NULL, //FOR SOFTWARE DRIVER TYPE
+		NULL, //FLAGS FOR RUNTIME LAYERS
+		NULL, //FEATURE LEVELS ARRAY
+		0, //# OF FEATURE LEVELS IN ARRAY
 		D3D11_SDK_VERSION,
-		&scd,
-		this->swapChain.GetAddressOf(),
-		this->device.GetAddressOf(),
-		NULL,
-		this->deviceContext.GetAddressOf()
-	);
+		&scd, //Swapchain description
+		this->swapChain.GetAddressOf(), //Swapchain Address
+		this->device.GetAddressOf(), //Device Address
+		NULL, //Supported feature level
+		this->deviceContext.GetAddressOf()); //Device Context Address
 
-	if (FAILED(hr)) {
-		ExceptionLoger::ExceptionCall(hr, "Swap chain description exception");
+	if (FAILED(hr))
+	{
+		ExceptionLoger::ExceptionCall(hr, "Failed to create device and swapchain.");
 		return false;
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
 	hr = this->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
-
 	if (FAILED(hr)) //If error occurred
 	{
-		ExceptionLoger::ExceptionCall(hr, "Create backBuffer exception");
+		ExceptionLoger::ExceptionCall(hr, "GetBuffer Failed.");
 		return false;
 	}
 
 	hr = this->device->CreateRenderTargetView(backBuffer.Get(), NULL, this->renderTargetView.GetAddressOf());
-
-	if (FAILED(hr)) {
-		ExceptionLoger::ExceptionCall(hr, "Create target view exception");
+	if (FAILED(hr)) //If error occurred
+	{
+		ExceptionLoger::ExceptionCall(hr, "Failed to create render target view.");
 		return false;
 	}
 
 	this->deviceContext->OMSetRenderTargets(1, this->renderTargetView.GetAddressOf(), NULL);
 
-	D3D11_VIEWPORT viewPort;
-	ZeroMemory(&viewPort, sizeof(D3D11_VIEWPORT));
+	//Create the Viewport
+	D3D11_VIEWPORT viewport;
+	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 
-	viewPort.TopLeftX = 0;
-	viewPort.TopLeftY = 0;
-	viewPort.Width = static_cast<FLOAT>(width);
-	viewPort.Height = static_cast<FLOAT>(height);
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.Width = width;
+	viewport.Height = height;
 
-	this->deviceContext->RSSetViewports(1, &viewPort);
+	//Set the Viewport
+	this->deviceContext->RSSetViewports(1, &viewport);
 
 	return true;
 }
 
-BOOL GFX::InitializeShaders()
+bool GFX::InitializeShaders()
 {
 	D3D11_INPUT_ELEMENT_DESC layout[] = 
 	{
-		{"POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_INSTANCE_DATA, 0 }
+		{"POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0  },
+		{"COLOR", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0  },
 	};
 
 	UINT numElements = ARRAYSIZE(layout);
@@ -122,11 +137,43 @@ BOOL GFX::InitializeShaders()
 	if (!vertexShader.Initialize(this->device, L"VertexShader.cso", layout, numElements))
 		return false;
 
+
+	return true;
+}
+
+bool GFX::InitializeScene()
+{
+	Vertex v[] =
+	{
+		Vertex(-0.5f,-0.5f,1.0f,0.0f,0.0f), //Bottom Left Red Point
+		Vertex(0.0f,0.5f,0.0f,1.0f,0.0f), //Top Middle Green Point
+		Vertex(0.5f,-0.5f,0.0f,0.0f,1.0f), //Bottom Right Blue Point
+	};
+
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.ByteWidth = sizeof(Vertex) * ARRAYSIZE(v);
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA vertexBufferData;
+	ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
+	vertexBufferData.pSysMem = v;
 	
 	if (!pixelShader.Initialize(this->device,  L"PixelShader.cso"))
 		return false;
 	
 
+	HRESULT hr = this->device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->vertexBuffer.GetAddressOf());
+	if (FAILED(hr))
+	{
+		ExceptionLoger::ExceptionCall(hr, "Failed to create vertex buffer.");
+		return false;
+	}
 
 	return true;
 }
+

@@ -5,6 +5,7 @@
 class ExceptionLoger {
 public:
 	static void ExceptionCall(std::string message);
+	static void ExceptionCall(std::wstring message);
 	static void ExceptionCall(HRESULT hr, std::string message);
 	static void ExceptionCall(HRESULT hr, std::wstring message);
-};
+}; 
