@@ -9,12 +9,10 @@ using namespace DirectX;
 
 class SphereObject {
 public:
-	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11ShaderResourceView* texture, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader);
+	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader);
 	//void SetTexture(ID3D11ShaderResourceView* texture);
-	void Draw(const XMMATRIX& viewProjectionMatrix);
 
-	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11ShaderResourceView* texture, ConstantBuffer<CB_VS_vertexshader>& cb_vs_vertexshader);
-	void SetTexture(ID3D11ShaderResourceView* texture);
+	//void SetTexture(ID3D11ShaderResourceView* texture);
 	void Draw(const XMMATRIX& viewProjectionMatrix);
 
 	const XMVECTOR& GetPositionVector() const;
@@ -46,14 +44,14 @@ private:
 	ID3D11Device* device = nullptr;
 	ID3D11DeviceContext* deviceContext = nullptr;
 	ConstantBuffer<CB_VS_vertexshader>* cbVsVertexshader = nullptr;
-	ID3D11ShaderResourceView* texture = nullptr;
+	//ID3D11ShaderResourceView* texture = nullptr;
 
 	VertexBuffer<Vertex> vertexBuffer;
 	IndexBuffer indexBuffer;
 
 	XMMATRIX worldMatrix = XMMatrixIdentity();
 
-	XMFLOAT3 pos; XMVECTOR posVector;
+	XMVECTOR posVector;
 	XMVECTOR rotVector;
 	XMFLOAT3 pos;
 	XMFLOAT3 rot;

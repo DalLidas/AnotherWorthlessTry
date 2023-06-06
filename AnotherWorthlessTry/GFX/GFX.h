@@ -12,7 +12,7 @@
 #include "Camera.h"
 #include "..//Timer.h"
 
-//#include "DrawableObjects/SphereObject.h"
+#include "DrawableObjects/SphereObject.h"
 
 class GFX {
 public: 
@@ -34,8 +34,7 @@ private:
 	PixelShader pixelShader;
 	ConstantBuffer<CB_VS_vertexshader> constantBuffer;
 
-	VertexBuffer<Vertex> vertexBuffer;
-	IndexBuffer indicesBuffer;
+	SphereObject SphereObject;
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer = nullptr;
@@ -45,6 +44,8 @@ private:
 
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont> spriteFont;
+
+
 
 	INT windowWidth = 0;
 	INT windowHeight = 0;

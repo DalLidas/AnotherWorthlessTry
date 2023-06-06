@@ -11,14 +11,10 @@ bool SphereObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 		//Textured Square
 		Vertex v[] =
 		{
-			Vertex(-0.5f,  -0.5f, -0.5f, 0.0f, 1.0f), //FRONT Bottom Left   - [0]
-			Vertex(-0.5f,   0.5f, -0.5f, 0.0f, 0.0f), //FRONT Top Left      - [1]
-			Vertex(0.5f,   0.5f, -0.5f, 1.0f, 0.0f), //FRONT Top Right     - [2]
-			Vertex(0.5f,  -0.5f, -0.5f, 1.0f, 1.0f), //FRONT Bottom Right   - [3]
-			Vertex(-0.5f,  -0.5f, 0.5f, 0.0f, 1.0f), //BACK Bottom Left   - [4]
-			Vertex(-0.5f,   0.5f, 0.5f, 0.0f, 0.0f), //BACK Top Left      - [5]
-			Vertex(0.5f,   0.5f, 0.5f, 1.0f, 0.0f), //BACK Top Right     - [6]
-			Vertex(0.5f,  -0.5f, 0.5f, 1.0f, 1.0f), //BACK Bottom Right   - [7]
+			Vertex(-0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f), //Bottom Left   - [0]
+			Vertex(-0.5f,   0.5f, 0.0f, 1.0f, 0.0f, 0.0f), //Top Left      - [1]
+			Vertex(0.5f,    0.5f, 0.0f, 1.0f, 1.0f, 0.0f), //Top Right     - [2]
+			Vertex(0.5f,   -0.5f, 0.0f, 1.0f, 0.0f, 0.0f), //Bottom Right  - [3]
 		};
 
 		//Load Vertex Data
@@ -28,18 +24,8 @@ bool SphereObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 
 		DWORD indices[] =
 		{
-			0, 1, 2, //FRONT
-			0, 2, 3, //FRONT
-			4, 7, 6, //BACK 
-			4, 6, 5, //BACK
-			3, 2, 6, //RIGHT SIDE
-			3, 6, 7, //RIGHT SIDE
-			4, 5, 1, //LEFT SIDE
-			4, 1, 0, //LEFT SIDE
-			1, 5, 6, //TOP
-			1, 6, 2, //TOP
-			0, 3, 7, //BOTTOM
-			0, 7, 4, //BOTTOM
+			0, 1, 2,
+			0, 2, 3
 		};
 
 		//Load Index Data
@@ -60,11 +46,6 @@ bool SphereObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	return true;
 }
 
-void SphereObject::SetTexture(ID3D11ShaderResourceView* texture)
-{
-	this->texture = texture;
-}
-
 void SphereObject::Draw(const XMMATRIX& viewProjectionMatrix)
 {
 	//Update Constant buffer with WVP Matrix
@@ -73,13 +54,15 @@ void SphereObject::Draw(const XMMATRIX& viewProjectionMatrix)
 	this->cbVsVertexshader->ApplyChanges();
 	this->deviceContext->VSSetConstantBuffers(0, 1, this->cbVsVertexshader->GetAddressOf());
 
-	this->deviceContext->PSSetShaderResources(0, 1, &this->texture); //Set Texture
+	//this->deviceContext->PSSetShaderResources(0, 1, &this->texture); //Set Texture
 	this->deviceContext->IASetIndexBuffer(this->indexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
 	
 	UINT offset = 0;
 
-	this->deviceContext->IASetVertexBuffers(0, 1, this->vertexBuffer.GetAddressOf(), this->vertexBuffer.StridePtr(), &offset);
-	this->deviceContext->DrawIndexed(this->indexBuffer.BufferSize(), 0, 0); //Draw
+	this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), vertexBuffer.StridePtr(), &offset);
+	this->deviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	this->deviceContext->DrawIndexed(indexBuffer.BufferSize(), 0, 0);
+
 }
 
 void SphereObject::UpdateWorldMatrix()
@@ -217,14 +200,14 @@ void SphereObject::SetLookAtPos(XMFLOAT3 lookAtPos)
 	float pitch = 0.0f;
 	if (lookAtPos.y != 0.0f)
 	{
-		const float distance = sqrt(lookAtPos.x * lookAtPos.x + lookAtPos.z * lookAtPos.z);
-		pitch = atan(lookAtPos.y / distance);
+		const float distance = sqrtf(lookAtPos.x * lookAtPos.x + lookAtPos.z * lookAtPos.z);
+		pitch = atanf(lookAtPos.y / distance);
 	}
 
 	float yaw = 0.0f;
 	if (lookAtPos.x != 0.0f)
 	{
-		yaw = atan(lookAtPos.x / lookAtPos.z);
+		yaw = atanf(lookAtPos.x / lookAtPos.z);
 	}
 	if (lookAtPos.z > 0)
 		yaw += XM_PI;

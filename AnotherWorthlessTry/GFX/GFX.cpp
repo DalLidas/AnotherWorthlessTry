@@ -28,26 +28,17 @@ void GFX::RenderFrame()
 	this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	this->deviceContext->RSSetState(this->resterazerState.Get());
 	this->deviceContext->OMSetDepthStencilState(this->depthStencilState.Get(), 0);
+	this->deviceContext->OMSetBlendState(NULL, NULL, 0xFFFFFFFF);
 
 	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
 	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
 
-	UINT offset = 0;
 
-	//Update Constant Buffer
-	XMMATRIX world = XMMatrixIdentity();
-	constantBuffer.data.mat = world * camera.GetViewMatrix() * camera.GetProjectionMatrix();
-	constantBuffer.data.mat = DirectX::XMMatrixTranspose(constantBuffer.data.mat);
-
-	if (!constantBuffer.ApplyChanges())
-		return;
-	this->deviceContext->VSSetConstantBuffers(0, 1, this->constantBuffer.GetAddressOf());
-
-	//Square
-	this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), vertexBuffer.StridePtr(), &offset);
-	this->deviceContext->IASetIndexBuffer(indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);
-
+	//Draw
+	{
+		SphereObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+	}
+	
 	//Draw Text
 	static int fpsCounter = 0;
 	static std::string fpsString = "FPS: 0";
@@ -243,41 +234,10 @@ bool GFX::InitializeShaders()
 
 bool GFX::InitializeScene()
 {
-	
-	//Textured Square
-	Vertex v[] =
-	{
-		Vertex(-0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f), //Bottom Left   - [0]
-		Vertex(-0.5f,   0.5f, 0.0f, 1.0f, 0.0f, 0.0f), //Top Left      - [1]
-		Vertex(0.5f,    0.5f, 0.0f, 1.0f, 1.0f, 0.0f), //Top Right     - [2]
-		Vertex(0.5f,   -0.5f, 0.0f, 1.0f, 0.0f, 0.0f), //Bottom Right   - [3]
-	};
-
-	//Load Vertex Data
-	HRESULT hr = this->vertexBuffer.Initialize(this->device.Get(), v, ARRAYSIZE(v));
-	if (FAILED(hr))
-	{
-		ExceptionLoger::ExceptionCall(hr, "Failed to create vertex buffer.");
-		return false;
-	}
-
-	DWORD indices[] =
-	{
-		0, 1, 2,
-		0, 2, 3
-	};
-
-	//Load Index Data
-
-	hr = this->indicesBuffer.Initialize(this->device.Get(), indices, ARRAYSIZE(indices));
-	if (FAILED(hr))
-	{
-		ExceptionLoger::ExceptionCall(hr, "Failed to create indices buffer.");
-		return false;
-	}
+	SphereObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 
 	//Initialize Constant Buffer(s)
-	hr = this->constantBuffer.Initialize(this->device.Get(), this->deviceContext.Get());
+	HRESULT hr = this->constantBuffer.Initialize(this->device.Get(), this->deviceContext.Get());
 	if (FAILED(hr))
 	{
 		ExceptionLoger::ExceptionCall(hr, "Failed to initialize constant buffer.");
