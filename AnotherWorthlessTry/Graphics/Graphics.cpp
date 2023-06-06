@@ -1,12 +1,12 @@
-#include "GFX.h"
+#include "Graphics.h"
 
-bool GFX::Initialize(HWND hwnd, INT width, INT height)
+bool Graphics::Initialize(HWND hwnd, int width, int height)
 {
 	this->windowWidth = width;
 	this->windowHeight = height;
 	this->fpsTimer.Start();
 
-	if (!InitializeDirectX11(hwnd, width, height))
+	if (!InitializeDirectX(hwnd))
 		return false;
 
 	if (!InitializeShaders())
@@ -15,24 +15,22 @@ bool GFX::Initialize(HWND hwnd, INT width, INT height)
 	if (!InitializeScene())
 		return false;
 
-	
-
 	return true;
 }
 
-void GFX::RenderFrame()
+void Graphics::RenderFrame()
 {
 	float bgcolor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
 	this->deviceContext->ClearDepthStencilView(this->depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	this->deviceContext->IASetInputLayout(this->vertexShader.GetInputLayout());
+	this->deviceContext->IASetInputLayout(this->vertexshader.GetInputLayout());
 	this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	this->deviceContext->RSSetState(this->resterazerState.Get());
+	this->deviceContext->RSSetState(this->rasterizerState.Get());
 	this->deviceContext->OMSetDepthStencilState(this->depthStencilState.Get(), 0);
-
-	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
-	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
+	this->deviceContext->PSSetSamplers(0, 1, this->samplerState.GetAddressOf());
+	this->deviceContext->VSSetShader(vertexshader.GetShader(), NULL, 0);
+	this->deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
 
 	UINT offset = 0;
 
@@ -46,10 +44,11 @@ void GFX::RenderFrame()
 	this->deviceContext->VSSetConstantBuffers(0, 1, this->constantBuffer.GetAddressOf());
 
 	//Square
+	this->deviceContext->PSSetShaderResources(0, 1, this->myTexture.GetAddressOf());
 	this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), vertexBuffer.StridePtr(), &offset);
 	this->deviceContext->IASetIndexBuffer(indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);
-
+	
 	//Draw Text
 	static int fpsCounter = 0;
 	static std::string fpsString = "FPS: 0";
@@ -61,30 +60,27 @@ void GFX::RenderFrame()
 		fpsTimer.Restart();
 	}
 	spriteBatch->Begin();
-	spriteFont->DrawString(spriteBatch.get(), StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+	spriteFont->DrawString(spriteBatch.get(), StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f,0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 	spriteBatch->End();
 
-	this->swapChain->Present(0, NULL);
+	this->swapchain->Present(0, NULL);
 }
 
-bool GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
+bool Graphics::InitializeDirectX(HWND hwnd)
 {
-	std::vector<AdapterData> adapters = AdapterReader::GetAdapterData();
+	std::vector<AdapterData> adapters = AdapterReader::GetAdapters();
 
 	if (adapters.size() < 1)
 	{
-		ExceptionLoger::ExceptionCall("IDXGI lost Adapters exception");
+		ErrorLogger::Log("No IDXGI Adapters found.");
 		return false;
 	}
 
-	//
-	//https://learn.microsoft.com/en-us/windows/win32/api/dxgi/ns-dxgi-dxgi_swap_chain_desc?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(DXGI%252FDXGI_SWAP_CHAIN_DESC)%3Bk(DXGI_SWAP_CHAIN_DESC)%3Bk(DevLang-C%252B%252B)%3Bk(TargetOS-Windows)%26rd%3Dtrue
-	//
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	scd.BufferDesc.Width = width;
-	scd.BufferDesc.Height = height;
+	scd.BufferDesc.Width = this->windowWidth;
+	scd.BufferDesc.Height = this->windowHeight;
 	scd.BufferDesc.RefreshRate.Numerator = 60;
 	scd.BufferDesc.RefreshRate.Denominator = 1;
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -101,46 +97,40 @@ bool GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
 	scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	//
-	//https://learn.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-d3d11createdeviceandswapchain?f1url=%3FappId%3DDev16IDEF1%26l%3DEN-US%26k%3Dk(D3D11%252FD3D11CreateDeviceAndSwapChain)%3Bk(D3D11CreateDeviceAndSwapChain)%3Bk(DevLang-C%252B%252B)%3Bk(TargetOS-Windows)%26rd%3Dtrue
-	//
 	HRESULT hr;
-	hr = D3D11CreateDeviceAndSwapChain(
-		adapters[0].pAdapter,
-		D3D_DRIVER_TYPE_UNKNOWN,
-		NULL, 
-		NULL, 
-		NULL, 
-		0, 
-		D3D11_SDK_VERSION,
-		&scd, 
-		this->swapChain.GetAddressOf(), 
-		this->device.GetAddressOf(), 
-		NULL, 
-		this->deviceContext.GetAddressOf());
+	hr = D3D11CreateDeviceAndSwapChain(	adapters[0].pAdapter, //IDXGI Adapter
+										D3D_DRIVER_TYPE_UNKNOWN,
+										NULL, //FOR SOFTWARE DRIVER TYPE
+										NULL, //FLAGS FOR RUNTIME LAYERS
+										NULL, //FEATURE LEVELS ARRAY
+										0, //# OF FEATURE LEVELS IN ARRAY
+										D3D11_SDK_VERSION,
+										&scd, //Swapchain description
+										this->swapchain.GetAddressOf(), //Swapchain Address
+										this->device.GetAddressOf(), //Device Address
+										NULL, //Supported feature level
+										this->deviceContext.GetAddressOf()); //Device Context Address
 
 	if (FAILED(hr))
 	{
-		ExceptionLoger::ExceptionCall(hr, "Created device and swapchain exception");
+		ErrorLogger::Log(hr, "Failed to create device and swapchain.");
 		return false;
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-	hr = this->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
-	if (FAILED(hr)) 
+	hr = this->swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
+	if (FAILED(hr)) //If error occurred
 	{
-		ExceptionLoger::ExceptionCall(hr, "Get buffer exception");
+		ErrorLogger::Log(hr, "GetBuffer Failed.");
 		return false;
 	}
 
 	hr = this->device->CreateRenderTargetView(backBuffer.Get(), NULL, this->renderTargetView.GetAddressOf());
-	if (FAILED(hr)) 
+	if (FAILED(hr)) //If error occurred
 	{
-		ExceptionLoger::ExceptionCall(hr, "Created render target view exception");
+		ErrorLogger::Log(hr, "Failed to create render target view.");
 		return false;
 	}
-
-	this->deviceContext->OMSetRenderTargets(1, this->renderTargetView.GetAddressOf(), NULL);
 
 	//Describe our Depth/Stencil Buffer
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
@@ -159,14 +149,14 @@ bool GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
 	hr = this->device->CreateTexture2D(&depthStencilDesc, NULL, this->depthStencilBuffer.GetAddressOf());
 	if (FAILED(hr)) //If error occurred
 	{
-		ExceptionLoger::ExceptionCall(hr, "Created depth stencil buffer exception");
+		ErrorLogger::Log(hr, "Failed to create depth stencil buffer.");
 		return false;
 	}
 
 	hr = this->device->CreateDepthStencilView(this->depthStencilBuffer.Get(), NULL, this->depthStencilView.GetAddressOf());
 	if (FAILED(hr)) //If error occurred
 	{
-		ExceptionLoger::ExceptionCall(hr, "Created depth stencil view exception");
+		ErrorLogger::Log(hr, "Failed to create depth stencil view.");
 		return false;
 	}
 
@@ -183,7 +173,7 @@ bool GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
 	hr = this->device->CreateDepthStencilState(&depthstencildesc, this->depthStencilState.GetAddressOf());
 	if (FAILED(hr))
 	{
-		ExceptionLoger::ExceptionCall(hr, "Created depth stencil state exception");
+		ErrorLogger::Log(hr, "Failed to create depth stencil state.");
 		return false;
 	}
 
@@ -193,71 +183,106 @@ bool GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = static_cast<FLOAT>(width);
-	viewport.Height = static_cast<FLOAT>(height);
+	viewport.Width = this->windowWidth;
+	viewport.Height = this->windowHeight;
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 
 	//Set the Viewport
 	this->deviceContext->RSSetViewports(1, &viewport);
 
-	D3D11_RASTERIZER_DESC resterazerDesc;
-	ZeroMemory(&resterazerDesc, sizeof(resterazerDesc));
+	//Create Rasterizer State
+	D3D11_RASTERIZER_DESC rasterizerDesc;
+	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 
-	resterazerDesc.FillMode = D3D11_FILL_SOLID;
-	resterazerDesc.CullMode = D3D11_CULL_BACK;
-
-	hr = this->device->CreateRasterizerState(&resterazerDesc, this->resterazerState.GetAddressOf());
+	rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
+	hr = this->device->CreateRasterizerState(&rasterizerDesc, this->rasterizerState.GetAddressOf());
 	if (FAILED(hr))
 	{
-		ExceptionLoger::ExceptionCall(hr, "Created rasterizer state exception");
+		ErrorLogger::Log(hr, "Failed to create rasterizer state.");
 		return false;
 	}
 
 	spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext.Get());
-	spriteFont = std::make_unique<DirectX::SpriteFont>(this->device.Get(), L"Resource/Font/comic_sans_ms_16.spritefont");
+	spriteFont = std::make_unique<DirectX::SpriteFont>(this->device.Get(), L"Data\\Fonts\\comic_sans_ms_16.spritefont");
+
+	//Create sampler description for sampler state
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	hr = this->device->CreateSamplerState(&sampDesc, this->samplerState.GetAddressOf()); //Create sampler state
+	if (FAILED(hr))
+	{
+		ErrorLogger::Log(hr, "Failed to create sampler state.");
+		return false;
+	}
 
 	return true;
 }
 
-bool GFX::InitializeShaders()
+bool Graphics::InitializeShaders()
 {
-	D3D11_INPUT_ELEMENT_DESC layout[] = 
+
+	std::wstring shaderfolder = L"";
+#pragma region DetermineShaderPath
+	if (IsDebuggerPresent() == TRUE)
+	{
+#ifdef _DEBUG //Debug Mode
+	#ifdef _WIN64 //x64
+			shaderfolder = L"..\\x64\\Debug\\";
+	#else  //x86 (Win32)
+			shaderfolder = L"..\\Debug\\";
+	#endif
+	#else //Release Mode
+	#ifdef _WIN64 //x64
+			shaderfolder = L"..\\x64\\Release\\";
+	#else  //x86 (Win32)
+			shaderfolder = L"..\\Release\\";
+	#endif
+#endif
+	}
+
+	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0  },
-		{"COLOR", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0  },
+		{"TEXCOORD", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0  },
 	};
 
 	UINT numElements = ARRAYSIZE(layout);
 
-	if (!vertexShader.Initialize(this->device, L"VertexShader.cso", layout, numElements))
+	if (!vertexshader.Initialize(this->device, shaderfolder + L"vertexshader.cso", layout, numElements))
 		return false;
 
-	
-	if (!pixelShader.Initialize(this->device,  L"PixelShader.cso"))
+	if (!pixelshader.Initialize(this->device, shaderfolder + L"pixelshader.cso"))
 		return false;
-	
+
 
 	return true;
 }
 
-bool GFX::InitializeScene()
+bool Graphics::InitializeScene()
 {
-	
 	//Textured Square
 	Vertex v[] =
 	{
-		Vertex(-0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f), //Bottom Left   - [0]
-		Vertex(-0.5f,   0.5f, 0.0f, 1.0f, 0.0f, 0.0f), //Top Left      - [1]
-		Vertex(0.5f,    0.5f, 0.0f, 1.0f, 1.0f, 0.0f), //Top Right     - [2]
-		Vertex(0.5f,   -0.5f, 0.0f, 1.0f, 0.0f, 0.0f), //Bottom Right   - [3]
+		Vertex(-0.5f,  -0.5f, 0.0f, 0.0f, 1.0f), //Bottom Left   - [0]
+		Vertex(-0.5f,   0.5f, 0.0f, 0.0f, 0.0f), //Top Left      - [1]
+		Vertex( 0.5f,   0.5f, 0.0f, 1.0f, 0.0f), //Top Right     - [2]
+		Vertex(0.5f,  -0.5f, 0.0f, 1.0f, 1.0f), //Bottom Right   - [3]
 	};
 
 	//Load Vertex Data
 	HRESULT hr = this->vertexBuffer.Initialize(this->device.Get(), v, ARRAYSIZE(v));
 	if (FAILED(hr))
 	{
-		ExceptionLoger::ExceptionCall(hr, "Failed to create vertex buffer.");
+		ErrorLogger::Log(hr, "Failed to create vertex buffer.");
 		return false;
 	}
 
@@ -268,25 +293,32 @@ bool GFX::InitializeScene()
 	};
 
 	//Load Index Data
-
+	
 	hr = this->indicesBuffer.Initialize(this->device.Get(), indices, ARRAYSIZE(indices));
 	if (FAILED(hr))
 	{
-		ExceptionLoger::ExceptionCall(hr, "Failed to create indices buffer.");
+		ErrorLogger::Log(hr, "Failed to create indices buffer.");
 		return hr;
+	}
+
+	//Load Texture
+	hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data\\Textures\\piano.png", nullptr, myTexture.GetAddressOf());
+	if (FAILED(hr))
+	{
+		ErrorLogger::Log(hr, "Failed to create wic texture from file.");
+		return false;
 	}
 
 	//Initialize Constant Buffer(s)
 	hr = this->constantBuffer.Initialize(this->device.Get(), this->deviceContext.Get());
 	if (FAILED(hr))
 	{
-		ExceptionLoger::ExceptionCall(hr, "Failed to initialize constant buffer.");
+		ErrorLogger::Log(hr, "Failed to initialize constant buffer.");
 		return false;
 	}
 
 	camera.SetPosition(0.0f, 0.0f, -2.0f);
-	camera.SetProjectionValues(90.0, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.0f);
+	camera.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.0f);
 
 	return true;
 }
-

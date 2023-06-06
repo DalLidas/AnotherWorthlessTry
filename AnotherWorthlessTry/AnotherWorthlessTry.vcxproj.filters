@@ -66,6 +66,12 @@
     <ClCompile Include="GFX\Shaders.cpp">
       <Filter>GFX</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Camera.cpp">
+      <Filter>GFX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StringConverter.h">
@@ -105,6 +111,24 @@
       <Filter>GFX</Filter>
     </ClInclude>
     <ClInclude Include="GFX\Shaders.h">
+      <Filter>GFX</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\ConstantBuffer.h">
+      <Filter>GFX</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\ConstantBufferTypes.h">
+      <Filter>GFX</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\IndexBuffer.h">
+      <Filter>GFX</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\VertexBuffer.h">
+      <Filter>GFX</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Camera.h">
       <Filter>GFX</Filter>
     </ClInclude>
   </ItemGroup>

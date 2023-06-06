@@ -1,7 +1,7 @@
 #pragma once
 
 //for input debug msg 
-#define INPUT_DEBUG_MSG
+//#define INPUT_DEBUG_MSG
 
 #include "WindowConteiner.h"
 #include "Input/Keyboard/KeyboardClass.h"
@@ -21,5 +21,6 @@ public:
     void RenderFrame();
 
 private:
+    Timer timer;
 
 };

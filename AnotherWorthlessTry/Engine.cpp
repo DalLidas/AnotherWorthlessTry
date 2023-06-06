@@ -2,6 +2,8 @@
 
 BOOL Engine::Initialize(HINSTANCE hInstance, std::string windowName, std::string windowClass, INT width, INT height)
 {
+    timer.Start();
+
     //keyboard.EnableAutoRepeatChars();
     keyboard.DisableAutoRepeatChars();
 
@@ -27,6 +29,59 @@ BOOL Engine::ProcessMessages()
 
 void Engine::Update()
 {
+
+    float dt = timer.GetMilisecondsElapsed();
+    timer.Restart();
+
+    while (!keyboard.CharBufferIsEmpty())
+    {
+        unsigned char ch = keyboard.ReadChar();
+    }
+
+    while (!keyboard.KeyBufferIsEmpty())
+    {
+        KeyboardEvent kbe = keyboard.ReadKey();
+        unsigned char keycode = kbe.GetKeyCode();
+    }
+
+    while (!mouse.EventBufferIsEmpty())
+    {
+        MouseEvent me = mouse.ReadEvent();
+        if (mouse.IsRightDown())
+        {
+            if (me.GetType() == MouseEvent::EventType::RAW_MOVE)
+            {
+                this->gfx.camera.AdjustRotation((float)me.GetPosY() * 0.01f, (float)me.GetPosX() * 0.01f, 0);
+            }
+        }
+    }
+
+    const float cameraSpeed = 0.006f;
+
+    if (keyboard.KeyIsPressed('W'))
+    {
+        this->gfx.camera.AdjustPosition(this->gfx.camera.GetForwardVector() * cameraSpeed * dt);
+    }
+    if (keyboard.KeyIsPressed('S'))
+    {
+        this->gfx.camera.AdjustPosition(this->gfx.camera.GetBackwardVector() * cameraSpeed * dt);
+    }
+    if (keyboard.KeyIsPressed('A'))
+    {
+        this->gfx.camera.AdjustPosition(this->gfx.camera.GetLeftVector() * cameraSpeed * dt);
+    }
+    if (keyboard.KeyIsPressed('D'))
+    {
+        this->gfx.camera.AdjustPosition(this->gfx.camera.GetRightVector() * cameraSpeed * dt);
+    }
+    if (keyboard.KeyIsPressed(VK_SPACE))
+    {
+        this->gfx.camera.AdjustPosition(0.0f, cameraSpeed * dt, 0.0f);
+    }
+    if (keyboard.KeyIsPressed('Z'))
+    {
+        this->gfx.camera.AdjustPosition(0.0f, -cameraSpeed * dt, 0.0f);
+    }
 
 #ifdef INPUT_DEBUG_MSG
     while (!keyboard.CharBufferIsEmpty()) {
@@ -82,8 +137,6 @@ void Engine::Update()
     }
 
 #endif // INPUT_DEBUG_MSG
-
-    
 }
 
 void Engine::RenderFrame()
