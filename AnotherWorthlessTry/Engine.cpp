@@ -30,7 +30,7 @@ BOOL Engine::ProcessMessages()
 void Engine::Update()
 {
 
-    float dt = timer.GetMilisecondsElapsed();
+    float dt = static_cast<float>(timer.GetMilisecondsElapsed());
     timer.Restart();
 
     while (!keyboard.CharBufferIsEmpty())
@@ -78,7 +78,7 @@ void Engine::Update()
     {
         this->gfx.camera.AdjustPosition(0.0f, cameraSpeed * dt, 0.0f);
     }
-    if (keyboard.KeyIsPressed('Z'))
+    if (keyboard.KeyIsPressed(VK_SHIFT))
     {
         this->gfx.camera.AdjustPosition(0.0f, -cameraSpeed * dt, 0.0f);
     }

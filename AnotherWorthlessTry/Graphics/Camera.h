@@ -18,13 +18,18 @@ public:
 
 	void SetPosition(const XMVECTOR & pos);
 	void SetPosition(float x, float y, float z);
+
 	void AdjustPosition(const XMVECTOR & pos);
 	void AdjustPosition(float x, float y, float z);
+
 	void SetRotation(const XMVECTOR & rot);
 	void SetRotation(float x, float y, float z);
+
 	void AdjustRotation(const XMVECTOR & rot);
 	void AdjustRotation(float x, float y, float z);
+
 	void SetLookAtPos(XMFLOAT3 lookAtPos);
+
 	const XMVECTOR & GetForwardVector();
 	const XMVECTOR & GetRightVector();
 	const XMVECTOR & GetBackwardVector();

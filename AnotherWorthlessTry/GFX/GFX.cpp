@@ -6,7 +6,7 @@ bool GFX::Initialize(HWND hwnd, INT width, INT height)
 	this->windowHeight = height;
 	this->fpsTimer.Start();
 
-	if (!InitializeDirectX11(hwnd, width, height))
+	if (!InitializeDirectX11(hwnd))
 		return false;
 
 	if (!InitializeShaders())
@@ -67,7 +67,7 @@ void GFX::RenderFrame()
 	this->swapChain->Present(0, NULL);
 }
 
-bool GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
+bool GFX::InitializeDirectX11(HWND hwnd)
 {
 	std::vector<AdapterData> adapters = AdapterReader::GetAdapterData();
 
@@ -83,8 +83,8 @@ bool GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	scd.BufferDesc.Width = width;
-	scd.BufferDesc.Height = height;
+	scd.BufferDesc.Width = this->windowWidth;
+	scd.BufferDesc.Height = this->windowHeight;
 	scd.BufferDesc.RefreshRate.Numerator = 60;
 	scd.BufferDesc.RefreshRate.Denominator = 1;
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -193,8 +193,8 @@ bool GFX::InitializeDirectX11(HWND hwnd, INT width, INT height)
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = static_cast<FLOAT>(width);
-	viewport.Height = static_cast<FLOAT>(height);
+	viewport.Width = static_cast<FLOAT>(this->windowWidth);
+	viewport.Height = static_cast<FLOAT>(this->windowHeight);
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 
@@ -273,7 +273,7 @@ bool GFX::InitializeScene()
 	if (FAILED(hr))
 	{
 		ExceptionLoger::ExceptionCall(hr, "Failed to create indices buffer.");
-		return hr;
+		return false;
 	}
 
 	//Initialize Constant Buffer(s)
@@ -285,7 +285,7 @@ bool GFX::InitializeScene()
 	}
 
 	camera.SetPosition(0.0f, 0.0f, -2.0f);
-	camera.SetProjectionValues(90.0, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.0f);
+	camera.SetProjectionValues(90.0, static_cast<FLOAT>(this->windowWidth) / static_cast<FLOAT>(this->windowHeight), 0.1f, 1000.0f);
 
 	return true;
 }

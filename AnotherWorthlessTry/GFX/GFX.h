@@ -19,7 +19,7 @@ public:
 	Camera camera;
 
 private:
-	bool InitializeDirectX11(HWND hwnd, INT width, INT height);
+	bool InitializeDirectX11(HWND hwnd);
 	bool InitializeShaders();
 	bool InitializeScene();
 
