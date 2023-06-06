@@ -151,9 +151,9 @@
     <ClCompile Include="EnteryPoint.cpp" />
     <ClCompile Include="ExceptionLoger.cpp" />
     <ClCompile Include="GFX\AdapterReader.cpp" />
+    <ClCompile Include="GFX\Camera.cpp" />
     <ClCompile Include="GFX\GFX.cpp" />
     <ClCompile Include="GFX\Shaders.cpp" />
-    <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Input\Keyboard\KeyboardClass.cpp" />
     <ClCompile Include="Input\Keyboard\KeyboardEvent.cpp" />
     <ClCompile Include="Input\Mouse\MouseClass.cpp" />
@@ -167,14 +167,15 @@
     <ClInclude Include="ExceptionLoger.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GFX\AdapterReader.h" />
+    <ClInclude Include="GFX\Camera.h" />
     <ClInclude Include="GFX\ConstantBuffer.h" />
     <ClInclude Include="GFX\ConstantBufferTypes.h" />
+    <ClInclude Include="GFX\DrawObjects\SphereObject.h" />
     <ClInclude Include="GFX\GFX.h" />
     <ClInclude Include="GFX\IndexBuffer.h" />
     <ClInclude Include="GFX\Shaders.h" />
     <ClInclude Include="GFX\Vertex.h" />
     <ClInclude Include="GFX\VertexBuffer.h" />
-    <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Input\Keyboard\KeyboardClass.h" />
     <ClInclude Include="Input\Keyboard\KeyboardEvent.h" />
     <ClInclude Include="Input\Mouse\MouseClass.h" />

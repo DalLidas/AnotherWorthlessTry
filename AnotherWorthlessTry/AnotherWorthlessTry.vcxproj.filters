@@ -25,6 +25,9 @@
     <Filter Include="GFX">
       <UniqueIdentifier>{747db3f1-f9d4-4183-8bda-f111d1cb004f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GFX\DrawObject">
+      <UniqueIdentifier>{d305ff75-7bd6-4636-be3e-94103a96d431}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EnteryPoint.cpp">
@@ -69,7 +72,7 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Camera.cpp">
+    <ClCompile Include="GFX\Camera.cpp">
       <Filter>GFX</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,7 +131,10 @@
     <ClInclude Include="Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Camera.h">
+    <ClInclude Include="GFX\DrawObjects\SphereObject.h">
+      <Filter>GFX\DrawObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\Camera.h">
       <Filter>GFX</Filter>
     </ClInclude>
   </ItemGroup>
