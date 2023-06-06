@@ -12,6 +12,8 @@
 #include "Camera.h"
 #include "..//Timer.h"
 
+//#include "DrawableObjects/SphereObject.h"
+
 class GFX {
 public: 
 	bool Initialize(HWND hwnd, INT width, INT height);

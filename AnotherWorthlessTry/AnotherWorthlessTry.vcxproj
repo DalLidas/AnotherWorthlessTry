@@ -152,6 +152,7 @@
     <ClCompile Include="ExceptionLoger.cpp" />
     <ClCompile Include="GFX\AdapterReader.cpp" />
     <ClCompile Include="GFX\Camera.cpp" />
+    <ClCompile Include="GFX\DrawableObjects\SphereObject.cpp" />
     <ClCompile Include="GFX\GFX.cpp" />
     <ClCompile Include="GFX\Shaders.cpp" />
     <ClCompile Include="Input\Keyboard\KeyboardClass.cpp" />
@@ -170,7 +171,7 @@
     <ClInclude Include="GFX\Camera.h" />
     <ClInclude Include="GFX\ConstantBuffer.h" />
     <ClInclude Include="GFX\ConstantBufferTypes.h" />
-    <ClInclude Include="GFX\DrawObjects\SphereObject.h" />
+    <ClInclude Include="GFX\DrawableObjects\SphereObject.h" />
     <ClInclude Include="GFX\GFX.h" />
     <ClInclude Include="GFX\IndexBuffer.h" />
     <ClInclude Include="GFX\Shaders.h" />

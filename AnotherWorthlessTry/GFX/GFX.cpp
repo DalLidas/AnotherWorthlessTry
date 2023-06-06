@@ -15,8 +15,6 @@ bool GFX::Initialize(HWND hwnd, INT width, INT height)
 	if (!InitializeScene())
 		return false;
 
-	
-
 	return true;
 }
 
@@ -144,6 +142,8 @@ bool GFX::InitializeDirectX11(HWND hwnd)
 
 	//Describe our Depth/Stencil Buffer
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+
 	depthStencilDesc.Width = this->windowWidth;
 	depthStencilDesc.Height = this->windowHeight;
 	depthStencilDesc.MipLevels = 1;
