@@ -8,6 +8,7 @@ int APIENTRY wWinMain(
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
+    UNREFERENCED_PARAMETER(nCmdShow);
 
     Engine engine;
     engine.Initialize(hInstance, "MyEngine", "MyEngineClass", 800, 600);

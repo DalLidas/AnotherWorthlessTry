@@ -10,16 +10,16 @@ public:
 	void Initialize(DirectX::XMFLOAT3 sceneBorder, bool bounceDicrimentState = false, bool airResistanceState = false);
 	void SetDeltaTime(float dt);
 
-	void CalculateScene(std::vector<Point> points);
+	//std::vector<Point> CalculateScene(const std::vector<Point>& points);
 
 	bool ObjectCollision(const Point& point1, const Point& point2);
 	bool BorderCollision(const Point& point);
 
-	Point Move(const Point& point);
-	void Accelerate(Point& point);
+	Point Move(const Point& point, int num = 1);
+	Point Accelerate(const Point& point);
 
-	void BounceFromObject(Point& point1, Point& point2);
-	void BounceFromBorder(Point& point);
+	std::pair<Point, Point> BounceFromObject(const Point& point1, const Point& point2);
+	Point BounceFromBorder(const Point& point);
 
 	void SetStates(bool bounceDicrimentState = false, bool airResistanceState = false);
 	void SetBounceDicrement(float newBounceDicrement);

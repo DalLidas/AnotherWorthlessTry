@@ -35,16 +35,19 @@ void Engine::Update()
     float dt = static_cast<float>(timer.GetMilisecondsElapsed());
     timer.Restart();
 
+#ifdef INPUT_DEBUG_MSG
     while (!keyboard.CharBufferIsEmpty())
     {
         unsigned char ch = keyboard.ReadChar();
     }
+
 
     while (!keyboard.KeyBufferIsEmpty())
     {
         KeyboardEvent kbe = keyboard.ReadKey();
         unsigned char keycode = kbe.GetKeyCode();
     }
+#endif //INPUT_DEBUG_MSG
 
     while (!mouse.EventBufferIsEmpty())
     {
@@ -97,13 +100,33 @@ void Engine::Update()
     }
 
     //Physics
-    physics.SetDeltaTime(dt);
+    physics.SetDeltaTime(dt);   
 
-    if (keyboard.KeyIsPressed('M')) {
-        for (size_t i = 0; i < this->scene.GetPoints().size(); ++i) {
-            scene.SetPoint(physics.Move(this->scene.GetPoints().at(i)), i);
+    for (size_t i = 0; i < this->scene.GetPoints().size(); ++i) {
+        Point bufPoint{};
+        bufPoint = physics.Move(this->scene.GetPoints().at(i));
+
+        if (physics.BorderCollision(bufPoint)) {
+            //physics.BounceFromBorder(this->scene.GetPoints().at(i));
         }
+        else {
+            for (size_t j = 0; j < this->scene.GetPoints().size(); ++j) {
+                if (i != j) {
+                    if (physics.ObjectCollision(bufPoint, this->scene.GetPoints().at(j))) {
+                        std::pair<Point, Point> bufPointPair{};
+                        bufPointPair = physics.BounceFromObject(this->scene.GetPoints().at(i), this->scene.GetPoints().at(j));
+
+                        bufPoint = physics.Move(bufPointPair.first, 1000);
+                        this->scene.SetPoint(physics.Move(bufPointPair.second, 1000), j);
+                    }
+                }
+            }
+        }
+
+        this->scene.SetPoint(bufPoint, i);
+        this->scene.SetPoint(physics.Accelerate(bufPoint), i);
     }
+   
 
 
 #ifdef INPUT_DEBUG_MSG
