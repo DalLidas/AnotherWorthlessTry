@@ -1,5 +1,7 @@
 #include "Engine.h"
 
+//C4324 - Normal warnin padding 
+
 int APIENTRY wWinMain(
     _In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
@@ -8,6 +10,7 @@ int APIENTRY wWinMain(
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
+    UNREFERENCED_PARAMETER(nCmdShow);
 
     Engine engine;
     engine.Initialize(hInstance, "MyEngine", "MyEngineClass", 800, 600);

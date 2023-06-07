@@ -33,17 +33,18 @@ void GFX::RenderFrame(const std::vector<Point>& points)
 	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
 	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
 
-
+	
 
 	//Draw
 	for (auto point = points.begin(); point != points.end(); ++point) {
 		//tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix
-		cubeObject.SetPosition(point->pointPos);
-		cubeObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+		rhombObject.SetPosition(point->pointPos);
+		rhombObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
 	
 		//sphereObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
 	}
-	
+
+	//m_shape->Draw(XMMatrixIdentity(), camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 	//Draw Text
 	static int fpsCounter = 0;
@@ -244,6 +245,8 @@ bool GFX::InitializeScene()
 	tileObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 	rhombObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 	cubeObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+
+	m_shape = GeometricPrimitive::CreateSphere(this->deviceContext.Get());
 	//sphereObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 
 

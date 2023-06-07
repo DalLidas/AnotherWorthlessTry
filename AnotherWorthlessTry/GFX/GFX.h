@@ -16,6 +16,8 @@
 #include "DrawableObjects/TileObject.h"
 #include "DrawableObjects/RhombObject.h"
 #include "DrawableObjects/CubeObject.h"
+
+#include <GeometricPrimitive.h>
 //#include "DrawableObjects/SphereObject.h"
 
 class GFX {
@@ -41,6 +43,8 @@ private:
 	TileObject tileObject;
 	RhombObject rhombObject;
 	CubeObject cubeObject;
+
+	std::unique_ptr<DirectX::GeometricPrimitive> m_shape;
 	//SphereObject sphereObject;
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView = nullptr;
