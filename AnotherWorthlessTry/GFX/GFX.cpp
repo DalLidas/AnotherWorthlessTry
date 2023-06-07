@@ -38,11 +38,9 @@ void GFX::RenderFrame(const std::vector<Point>& points)
 	//Draw
 	for (auto point = points.begin(); point != points.end(); ++point) {
 		//tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix
-		rhombObject.SetPosition(point->pointPos);
-		rhombObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
-
+		cubeObject.SetPosition(point->pointPos);
+		cubeObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
 	
-
 		//sphereObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
 	}
 	
@@ -245,6 +243,7 @@ bool GFX::InitializeScene()
 
 	tileObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 	rhombObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+	cubeObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 	//sphereObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 
 

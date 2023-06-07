@@ -18,6 +18,8 @@ BOOL Engine::Initialize(HINSTANCE hInstance, std::string windowName, std::string
         return false;
     }
 
+    physics.Initialize(scene.GetSceneBorder());
+
     return true;
 
 }
@@ -84,6 +86,25 @@ void Engine::Update()
     }
 
 
+    //Scene
+    if (keyboard.KeyIsPressed('C'))
+    {
+        static float i = 0.0f;
+        XMFLOAT3 f{ i, i, i };
+        i += 0.001f;
+        
+        this->scene.createPoint(f);
+    }
+
+    //Physics
+    physics.SetDeltaTime(dt);
+
+    if (keyboard.KeyIsPressed('M')) {
+        for (size_t i = 0; i < this->scene.GetPoints().size(); ++i) {
+            scene.SetPoint(physics.Move(this->scene.GetPoints().at(i)), i);
+        }
+    }
+
 
 #ifdef INPUT_DEBUG_MSG
     while (!keyboard.CharBufferIsEmpty()) {
@@ -92,7 +113,7 @@ void Engine::Update()
         outmsg += ch;
         outmsg += "\n";
         OutputDebugStringA(outmsg.c_str());
-}
+    }
 
     while (!keyboard.KeyBufferIsEmpty()) {
 
@@ -137,7 +158,7 @@ void Engine::Update()
         }
 
     }
-
+    )
 #endif // INPUT_DEBUG_MSG
 }
 

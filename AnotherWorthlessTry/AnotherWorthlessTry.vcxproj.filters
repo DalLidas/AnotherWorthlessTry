@@ -87,6 +87,12 @@
     <ClCompile Include="GFX\DrawableObjects\RhombObject.cpp">
       <Filter>GFX\DrawableObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Physics\DotPhisics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GFX\DrawableObjects\CubeObject.cpp">
+      <Filter>GFX\DrawableObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StringConverter.h">
@@ -157,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="Point.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\DrawableObjects\CubeObject.h">
+      <Filter>GFX\DrawableObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,21 +1,23 @@
-#include "RhombObject.h"
+#include "CubeObject.h"
 
-bool RhombObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader)
+bool CubeObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader)
 {
 	this->device = device;
 	this->deviceContext = deviceContext;
 	this->cbVsVertexshader = &cbVsVertexshader;
 
 	
-	//Rhomb
+	//Square
 	Vertex v[] =
 	{
-		Vertex(1.0f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f), // topX - [0]
-		Vertex(0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f), // topY - [1]
-		Vertex(0.0f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f), // topZ - [2]
-		Vertex(0.0f,  -1.0f, 0.0f, 1.0f, 1.0f, 0.0f),// botY - [3]
-		Vertex(0.0f,  0.0f, -1.0f, 1.0f, 0.0f, 1.0f), // botZ - [4]
-		Vertex(-1.0f,  0.0f, 0.0f, 0.0f, 1.0f, 1.0f), // botX - [5]
+		Vertex(-0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, 0.0f), //FRONT Bottom Left   - [0]
+		Vertex(-0.5f,   0.5f, -0.5f, 0.0f, 0.0f, 0.0f), //FRONT Top Left      - [1]
+		Vertex(0.5f,   0.5f, -0.5f, 1.0f, 0.0f, 0.0f), //FRONT Top Right     - [2]
+		Vertex(0.5f,  -0.5f, -0.5f, 1.0f, 1.0f, 0.0f), //FRONT Bottom Right   - [3]
+		Vertex(-0.5f,  -0.5f, 0.5f, 0.0f, 1.0f, 0.0f), //BACK Bottom Left   - [4]
+		Vertex(-0.5f,   0.5f, 0.5f, 0.0f, 0.0f, 0.0f), //BACK Top Left      - [5]
+		Vertex(0.5f,   0.5f, 0.5f, 1.0f, 0.0f, 0.0f), //BACK Top Right     - [6]
+		Vertex(0.5f,  -0.5f, 0.5f, 1.0f, 1.0f, 0.0f), //BACK Bottom Right   - [7]
 	};
 
 	//Load Vertex Data
@@ -23,14 +25,18 @@ bool RhombObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 
 	DWORD indices[] =
 	{
-		0, 1, 2, //octant 1
-		3, 0, 2, //octant 2
-		3, 4, 0, //octant 3
-		4, 1, 0, //octant 4
-		1, 5, 2, //octant 5
-		5, 3, 2, //octant 6
-		3, 5, 4, //octant 7
-		4, 5, 1, //octant 8
+		0, 1, 2, //FRONT
+		0, 2, 3, //FRONT
+		4, 7, 6, //BACK 
+		4, 6, 5, //BACK
+		3, 2, 6, //RIGHT SIDE
+		3, 6, 7, //RIGHT SIDE
+		4, 5, 1, //LEFT SIDE
+		4, 1, 0, //LEFT SIDE
+		1, 5, 6, //TOP
+		1, 6, 2, //TOP
+		0, 3, 7, //BOTTOM
+		0, 7, 4, //BOTTOM
 	};
 
 	//Load Index Data
@@ -44,7 +50,7 @@ bool RhombObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	return true;
 }
 
-void RhombObject::Draw(const XMMATRIX& viewProjectionMatrix)
+void CubeObject::Draw(const XMMATRIX& viewProjectionMatrix)
 {
 	//Update Constant buffer with WVP Matrix
 	this->cbVsVertexshader->data.mat = this->worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
@@ -52,7 +58,7 @@ void RhombObject::Draw(const XMMATRIX& viewProjectionMatrix)
 	this->cbVsVertexshader->ApplyChanges();
 	this->deviceContext->VSSetConstantBuffers(0, 1, this->cbVsVertexshader->GetAddressOf());
 
-
+	//this->deviceContext->PSSetShaderResources(0, 1, &this->texture); //Set Texture
 	this->deviceContext->IASetIndexBuffer(this->indexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
 	
 	UINT offset = 0;
@@ -63,7 +69,7 @@ void RhombObject::Draw(const XMMATRIX& viewProjectionMatrix)
 
 }
 
-void RhombObject::UpdateWorldMatrix()
+void CubeObject::UpdateWorldMatrix()
 {
 	this->worldMatrix = XMMatrixRotationRollPitchYaw(this->rot.x, this->rot.y, this->rot.z) * XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z);
 	XMMATRIX vecRotationMatrix = XMMatrixRotationRollPitchYaw(0.0f, this->rot.y, 0.0f);
@@ -73,55 +79,55 @@ void RhombObject::UpdateWorldMatrix()
 	this->vecRight = XMVector3TransformCoord(this->DEFAULT_RIGHT_VECTOR, vecRotationMatrix);
 }
 
-const XMVECTOR& RhombObject::GetPositionVector() const
+const XMVECTOR& CubeObject::GetPositionVector() const
 {
 	return this->posVector;
 }
 
-const XMFLOAT3& RhombObject::GetPositionFloat3() const
+const XMFLOAT3& CubeObject::GetPositionFloat3() const
 {
 	return this->pos;
 }
 
-const XMVECTOR& RhombObject::GetRotationVector() const
+const XMVECTOR& CubeObject::GetRotationVector() const
 {
 	return this->rotVector;
 }
 
-const XMFLOAT3& RhombObject::GetRotationFloat3() const
+const XMFLOAT3& CubeObject::GetRotationFloat3() const
 {
 	return this->rot;
 }
 
-void RhombObject::SetPosition(const XMVECTOR& pos)
+void CubeObject::SetPosition(const XMVECTOR& pos)
 {
 	XMStoreFloat3(&this->pos, pos);
 	this->posVector = pos;
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::SetPosition(const XMFLOAT3& pos)
+void CubeObject::SetPosition(const XMFLOAT3& pos)
 {
 	this->pos = pos;
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::SetPosition(float x, float y, float z)
+void CubeObject::SetPosition(float x, float y, float z)
 {
 	this->pos = XMFLOAT3(x, y, z);
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::AdjustPosition(const XMVECTOR& pos)
+void CubeObject::AdjustPosition(const XMVECTOR& pos)
 {
 	this->posVector += pos;
 	XMStoreFloat3(&this->pos, this->posVector);
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::AdjustPosition(const XMFLOAT3& pos)
+void CubeObject::AdjustPosition(const XMFLOAT3& pos)
 {
 	this->pos.x += pos.y;
 	this->pos.y += pos.y;
@@ -130,7 +136,7 @@ void RhombObject::AdjustPosition(const XMFLOAT3& pos)
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::AdjustPosition(float x, float y, float z)
+void CubeObject::AdjustPosition(float x, float y, float z)
 {
 	this->pos.x += x;
 	this->pos.y += y;
@@ -139,35 +145,35 @@ void RhombObject::AdjustPosition(float x, float y, float z)
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::SetRotation(const XMVECTOR& rot)
+void CubeObject::SetRotation(const XMVECTOR& rot)
 {
 	this->rotVector = rot;
 	XMStoreFloat3(&this->rot, rot);
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::SetRotation(const XMFLOAT3& rot)
+void CubeObject::SetRotation(const XMFLOAT3& rot)
 {
 	this->rot = rot;
 	this->rotVector = XMLoadFloat3(&this->rot);
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::SetRotation(float x, float y, float z)
+void CubeObject::SetRotation(float x, float y, float z)
 {
 	this->rot = XMFLOAT3(x, y, z);
 	this->rotVector = XMLoadFloat3(&this->rot);
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::AdjustRotation(const XMVECTOR& rot)
+void CubeObject::AdjustRotation(const XMVECTOR& rot)
 {
 	this->rotVector += rot;
 	XMStoreFloat3(&this->rot, this->rotVector);
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::AdjustRotation(const XMFLOAT3& rot)
+void CubeObject::AdjustRotation(const XMFLOAT3& rot)
 {
 	this->rot.x += rot.x;
 	this->rot.y += rot.y;
@@ -176,7 +182,7 @@ void RhombObject::AdjustRotation(const XMFLOAT3& rot)
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::AdjustRotation(float x, float y, float z)
+void CubeObject::AdjustRotation(float x, float y, float z)
 {
 	this->rot.x += x;
 	this->rot.y += y;
@@ -185,7 +191,7 @@ void RhombObject::AdjustRotation(float x, float y, float z)
 	this->UpdateWorldMatrix();
 }
 
-void RhombObject::SetLookAtPos(XMFLOAT3 lookAtPos)
+void CubeObject::SetLookAtPos(XMFLOAT3 lookAtPos)
 {
 	//Verify that look at pos is not the same as cam pos. They cannot be the same as that wouldn't make sense and would result in undefined behavior.
 	if (lookAtPos.x == this->pos.x && lookAtPos.y == this->pos.y && lookAtPos.z == this->pos.z)
@@ -213,22 +219,22 @@ void RhombObject::SetLookAtPos(XMFLOAT3 lookAtPos)
 	this->SetRotation(pitch, yaw, 0.0f);
 }
 
-const XMVECTOR& RhombObject::GetForwardVector()
+const XMVECTOR& CubeObject::GetForwardVector()
 {
 	return this->vecForward;
 }
 
-const XMVECTOR& RhombObject::GetRightVector()
+const XMVECTOR& CubeObject::GetRightVector()
 {
 	return this->vecRight;
 }
 
-const XMVECTOR& RhombObject::GetBackwardVector()
+const XMVECTOR& CubeObject::GetBackwardVector()
 {
 	return this->vecBackward;
 }
 
-const XMVECTOR& RhombObject::GetLeftVector()
+const XMVECTOR& CubeObject::GetLeftVector()
 {
 	return this->vecLeft;
 }

@@ -4,14 +4,7 @@ Scene::Scene()
 {
 	Point p;
 	p.radius = 1;
-	DirectX::XMFLOAT3 pos {1.0f, 1.0f, 1.0f};
-	p.pointPos = pos;
-	p.velosity = this->DEFAULT_VELOSITY;
-	p.acceleration = this->DEFAULT_ACCELERATION;
-
-	this->points.push_back(p);
-
-	pos = { 3.1f, 3.1f, 3.0f };
+	DirectX::XMFLOAT3 pos {0.0f, 0.0f, 0.0f};
 	p.pointPos = pos;
 	p.velosity = this->DEFAULT_VELOSITY;
 	p.acceleration = this->DEFAULT_ACCELERATION;
@@ -29,6 +22,22 @@ DirectX::XMFLOAT3 Scene::GetSceneBorder() const
 	return this->sceneBorder;
 }
 
+void Scene::SetPoints(std::vector<Point> newPoints)
+{
+	this->points.clear();
+	this->points = newPoints;
+}
+
+void Scene::SetPoint(Point newPoint, size_t index)
+{
+	this->points.at(index) = newPoint;
+}
+
+void Scene::SetSceneBorder(DirectX::XMFLOAT3 newSceneBorder)
+{
+	this->sceneBorder = newSceneBorder;
+}
+
 void Scene::createPoint()
 {
 	Point p;
@@ -37,6 +46,16 @@ void Scene::createPoint()
 	p.pointPos = this->pointOfGod;
 	p.velosity = this->DEFAULT_VELOSITY;
 	p.acceleration = this->DEFAULT_ACCELERATION;
+
+	this->points.push_back(p);
+}
+
+void Scene::createPoint(DirectX::XMFLOAT3 pos)
+{
+	Point p;
+	p.pointPos = pos;
+	p.velosity = this->ZERO_VELOSITY;
+	p.acceleration = this->ZERO_ACCELERATION;
 
 	this->points.push_back(p);
 }

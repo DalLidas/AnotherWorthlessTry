@@ -13,9 +13,9 @@
 #include "..//Timer.h"
 #include "..//Point.h"
 
-
 #include "DrawableObjects/TileObject.h"
 #include "DrawableObjects/RhombObject.h"
+#include "DrawableObjects/CubeObject.h"
 //#include "DrawableObjects/SphereObject.h"
 
 class GFX {
@@ -40,6 +40,7 @@ private:
 
 	TileObject tileObject;
 	RhombObject rhombObject;
+	CubeObject cubeObject;
 	//SphereObject sphereObject;
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView = nullptr;

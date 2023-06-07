@@ -152,6 +152,7 @@
     <ClCompile Include="ExceptionLoger.cpp" />
     <ClCompile Include="GFX\AdapterReader.cpp" />
     <ClCompile Include="GFX\Camera.cpp" />
+    <ClCompile Include="GFX\DrawableObjects\CubeObject.cpp" />
     <ClCompile Include="GFX\DrawableObjects\RhombObject.cpp" />
     <ClCompile Include="GFX\DrawableObjects\TileObject.cpp" />
     <ClCompile Include="GFX\GFX.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="Input\Keyboard\KeyboardEvent.cpp" />
     <ClCompile Include="Input\Mouse\MouseClass.cpp" />
     <ClCompile Include="Input\Mouse\MouseEvent.cpp" />
+    <ClCompile Include="Physics\DotPhisics.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="StringConverter.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -173,6 +175,7 @@
     <ClInclude Include="GFX\Camera.h" />
     <ClInclude Include="GFX\ConstantBuffer.h" />
     <ClInclude Include="GFX\ConstantBufferTypes.h" />
+    <ClInclude Include="GFX\DrawableObjects\CubeObject.h" />
     <ClInclude Include="GFX\DrawableObjects\RhombObject.h" />
     <ClInclude Include="GFX\DrawableObjects\TileObject.h" />
     <ClInclude Include="GFX\GFX.h" />
