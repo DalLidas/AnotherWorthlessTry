@@ -138,13 +138,12 @@ Point DotPhysics::BounceFromBorder(const Point& point)
         point.radius,
         point.pointPos,
         DirectX::XMFLOAT3{
-            -point.velosity.x,
+        -point.velosity.x,
             -point.velosity.y,
             -point.velosity.z,
-        },
+    },
         point.acceleration
     );
-
 }
 
 void DotPhysics::SetStates(bool dicrimentState, bool airResistanceState)
