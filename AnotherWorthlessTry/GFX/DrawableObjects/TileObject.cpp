@@ -6,14 +6,16 @@ bool TileObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 	this->deviceContext = deviceContext;
 	this->cbVsVertexshader = &cbVsVertexshader;
 
-	
+	XMFLOAT3 Gray{ 134.0f / 255.0f, 142.0f / 255.0f, 150.0f / 255.0f };
+	XMFLOAT3 DarkGray{ 33.0f / 255.0f, 37.0f / 255.0f, 41.0f / 255.0f };
+
 	//Square
 	Vertex v[] =
 	{
-		Vertex(-1.0f,  -1.0f, 0.0f, 1.0f, 0.0f, 0.0f), //Bottom Left   - [0]
-		Vertex(-1.0f,   1.0f, 0.0f, 1.0f, 0.0f, 0.0f), //Top Left      - [1]
-		Vertex(1.0f,    1.0f, 0.0f, 1.0f, 1.0f, 0.0f), //Top Right     - [2]
-		Vertex(1.0f,   -1.0f, 0.0f, 1.0f, 0.0f, 0.0f), //Bottom Right  - [3]
+		Vertex(-1.0f,  -1.0f, 0.0f, Gray), //Bottom Left   - [0]
+		Vertex(-1.0f,   1.0f, 0.0f, Gray), //Top Left      - [1]
+		Vertex(1.0f,    1.0f, 0.0f, Gray), //Top Right     - [2]
+		Vertex(1.0f,   -1.0f, 0.0f, DarkGray), //Bottom Right  - [3]
 	};
 
 	//Load Vertex Data
@@ -39,12 +41,11 @@ bool TileObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 void TileObject::Draw(const XMMATRIX& viewProjectionMatrix)
 {
 	//Update Constant buffer with WVP Matrix
-	this->cbVsVertexshader->data.mat = this->worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
+	this->cbVsVertexshader->data.mat = this->scaleMatrix * this->worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
 	this->cbVsVertexshader->data.mat = XMMatrixTranspose(this->cbVsVertexshader->data.mat);
 	this->cbVsVertexshader->ApplyChanges();
 	this->deviceContext->VSSetConstantBuffers(0, 1, this->cbVsVertexshader->GetAddressOf());
 
-	//this->deviceContext->PSSetShaderResources(0, 1, &this->texture); //Set Texture
 	this->deviceContext->IASetIndexBuffer(this->indexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
 	
 	UINT offset = 0;
@@ -83,6 +84,26 @@ const XMVECTOR& TileObject::GetRotationVector() const
 const XMFLOAT3& TileObject::GetRotationFloat3() const
 {
 	return this->rot;
+}
+
+void TileObject::SetScale(float scale)
+{
+	this->scaleMatrix = XMMatrixScaling(scale, scale, scale);
+}
+
+void TileObject::SetScaleX(float scale)
+{
+	this->scaleMatrix = XMMatrixScaling(scale, 1.0f, 1.0f);
+}
+
+void TileObject::SetScaleY(float scale)
+{
+	this->scaleMatrix = XMMatrixScaling(1.0f, scale, 1.0f);
+}
+
+void TileObject::SetScaleZ(float scale)
+{
+	this->scaleMatrix = XMMatrixScaling(1.0f, 1.0f, scale);
 }
 
 void TileObject::SetPosition(const XMVECTOR& pos)

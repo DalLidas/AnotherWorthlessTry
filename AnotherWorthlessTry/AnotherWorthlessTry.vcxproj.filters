@@ -93,6 +93,9 @@
     <ClCompile Include="GFX\DrawableObjects\CubeObject.cpp">
       <Filter>GFX\DrawableObjects</Filter>
     </ClCompile>
+    <ClCompile Include="GFX\DrawableObjects\SkyBox.cpp">
+      <Filter>GFX\DrawableObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StringConverter.h">
@@ -165,6 +168,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GFX\DrawableObjects\CubeObject.h">
+      <Filter>GFX\DrawableObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\DrawableObjects\SkyBox.h">
       <Filter>GFX\DrawableObjects</Filter>
     </ClInclude>
   </ItemGroup>

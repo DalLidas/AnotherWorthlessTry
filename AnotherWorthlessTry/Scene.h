@@ -21,7 +21,7 @@ public:
 	void createPoint(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& velosity, const DirectX::XMFLOAT3& acceleration);
 
 private:
-	DirectX::XMFLOAT3 sceneBorder{ 50.0f, 50.0f, 50.0f };
+	DirectX::XMFLOAT3 sceneBorder{ 10.0f, 10.0f, 10.0f };
 	DirectX::XMFLOAT3 pointOfGod { 40.0f, 40.0f, 0.0f };
 	std::vector<Point> points;
 

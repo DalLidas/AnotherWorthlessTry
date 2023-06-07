@@ -104,10 +104,10 @@ void Engine::Update()
 
     for (size_t i = 0; i < this->scene.GetPoints().size(); ++i) {
         Point bufPoint{};
-        bufPoint = physics.Move(this->scene.GetPoints().at(i));
+        bufPoint = physics.Move(this->scene.GetPoints().at(i), 2);
 
         if (physics.BorderCollision(bufPoint)) {
-            //physics.BounceFromBorder(this->scene.GetPoints().at(i));
+            bufPoint = physics.Move(bufPoint);
         }
         else {
             for (size_t j = 0; j < this->scene.GetPoints().size(); ++j) {
@@ -116,8 +116,8 @@ void Engine::Update()
                         std::pair<Point, Point> bufPointPair{};
                         bufPointPair = physics.BounceFromObject(this->scene.GetPoints().at(i), this->scene.GetPoints().at(j));
 
-                        bufPoint = physics.Move(bufPointPair.first, 1000);
-                        this->scene.SetPoint(physics.Move(bufPointPair.second, 1000), j);
+                        bufPoint = physics.Move(bufPointPair.first, 100);
+                        this->scene.SetPoint(physics.Move(bufPointPair.second, 100), j);
                     }
                 }
             }
@@ -187,5 +187,5 @@ void Engine::Update()
 
 void Engine::RenderFrame()
 {
-    gfx.RenderFrame(scene.GetPoints());
+    gfx.RenderFrame(scene.GetPoints(), scene.GetSceneBorder());
 }

@@ -16,6 +16,8 @@
 #include "DrawableObjects/TileObject.h"
 #include "DrawableObjects/RhombObject.h"
 #include "DrawableObjects/CubeObject.h"
+#include "DrawableObjects/SkyBox.h"
+
 
 #include <GeometricPrimitive.h>
 //#include "DrawableObjects/SphereObject.h"
@@ -23,7 +25,7 @@
 class GFX {
 public: 
 	bool Initialize(HWND hwnd, INT width, INT height);
-	void RenderFrame(const std::vector<Point>& points);
+	void RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border);
 	Camera camera;
 
 private:
@@ -43,6 +45,7 @@ private:
 	TileObject tileObject;
 	RhombObject rhombObject;
 	CubeObject cubeObject;
+	SkyBox skyBox;
 
 	std::unique_ptr<DirectX::GeometricPrimitive> m_shape;
 	//SphereObject sphereObject;

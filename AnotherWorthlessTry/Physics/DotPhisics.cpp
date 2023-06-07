@@ -12,33 +12,7 @@ void DotPhysics::SetDeltaTime(float dt)
     this->dt = dt;
 }
 
-//std::vector<Point> DotPhysics::CalculateScene(std::vector<Point> points)
-//{
-//    Point bufPoint{};
-//   
-//    for (size_t i = 0; i < points.size(); ++i) {
-//        bufPoint = Move(points.at(i));
-//
-//        if (BorderCollision(bufPoint)) {
-//            BounceFromBorder(points.at(i));
-//        }
-//        else {
-//            for (size_t j = 0; j < points.size(); ++j) {
-//                if (i != j) {
-//                    if (ObjectCollision(bufPoint, points.at(j))) {
-//                        BounceFromObject(points.at(i), points.at(j));
-//                    }
-//                   
-//                }
-//            }
-//        }
-//        
-//        points.at(i) = bufPoint;
-//        points.at(i) = Accelerate(bufPoint);
-//    }
-//
-//    return points;
-//}
+//std::vector<Point> DotPhysics::CalculateScene(std::vector<Point> points){}
 
 bool DotPhysics::ObjectCollision(const Point& point1, const Point& point2)
 {
@@ -51,7 +25,10 @@ bool DotPhysics::ObjectCollision(const Point& point1, const Point& point2)
 
 bool DotPhysics::BorderCollision(const Point& point)
 {
-    return false;
+    return point.pointPos.x > sceneBorder.x || point.pointPos.x < 0 ||
+        point.pointPos.x > sceneBorder.y || point.pointPos.y < 0 ||
+        point.pointPos.x > sceneBorder.z || point.pointPos.z < 0;
+
 }
 
 Point DotPhysics::Move(const Point& point, int num)
@@ -106,30 +83,26 @@ std::pair<Point, Point> DotPhysics::BounceFromObject(const Point& point1, const 
         (point1.velosity.z + point2.velosity.z) / 2
     };*/
 
-    DirectX::XMFLOAT3 p1Velosity {
-        point2.velosity.x,
-        point2.velosity.y,
-        point2.velosity.z,
-    };
-
-    DirectX::XMFLOAT3 p2Velosity {
-        point1.velosity.x,
-        point1.velosity.y,
-        point1.velosity.z,
-    };
-
     if (bounceDicrimentState) {
         return std::pair<Point, Point>(
             Point{
                point1.radius,
                point1.pointPos,
-               p1Velosity,
+               DirectX::XMFLOAT3 {
+                    point2.velosity.x,
+                    point2.velosity.y,
+                    point2.velosity.z,
+                },
                point1.acceleration
             },
             Point{
                point2.radius,
                point2.pointPos,
-               p2Velosity,
+               DirectX::XMFLOAT3{
+                    point1.velosity.x,
+                    point1.velosity.y,
+                    point1.velosity.z,
+               },
                point2.acceleration
             });
     }
@@ -138,13 +111,21 @@ std::pair<Point, Point> DotPhysics::BounceFromObject(const Point& point1, const 
             Point{
                point1.radius,
                point1.pointPos,
-               p1Velosity,
+               DirectX::XMFLOAT3 {
+                    point2.velosity.x,
+                    point2.velosity.y,
+                    point2.velosity.z,
+                },
                point1.acceleration
             },
             Point{
                point2.radius,
                point2.pointPos,
-               p2Velosity,
+               DirectX::XMFLOAT3{
+                    point1.velosity.x,
+                    point1.velosity.y,
+                    point1.velosity.z,
+               },
                point2.acceleration
             });
     }
@@ -153,10 +134,18 @@ std::pair<Point, Point> DotPhysics::BounceFromObject(const Point& point1, const 
 
 Point DotPhysics::BounceFromBorder(const Point& point)
 {
-    return Point();
+    return Point(
+        point.radius,
+        point.pointPos,
+        DirectX::XMFLOAT3{
+            -point.velosity.x,
+            -point.velosity.y,
+            -point.velosity.z,
+        },
+        point.acceleration
+    );
+
 }
-
-
 
 void DotPhysics::SetStates(bool dicrimentState, bool airResistanceState)
 {

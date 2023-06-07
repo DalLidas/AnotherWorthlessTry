@@ -154,6 +154,7 @@
     <ClCompile Include="GFX\Camera.cpp" />
     <ClCompile Include="GFX\DrawableObjects\CubeObject.cpp" />
     <ClCompile Include="GFX\DrawableObjects\RhombObject.cpp" />
+    <ClCompile Include="GFX\DrawableObjects\SkyBox.cpp" />
     <ClCompile Include="GFX\DrawableObjects\TileObject.cpp" />
     <ClCompile Include="GFX\GFX.cpp" />
     <ClCompile Include="GFX\Shaders.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="GFX\ConstantBufferTypes.h" />
     <ClInclude Include="GFX\DrawableObjects\CubeObject.h" />
     <ClInclude Include="GFX\DrawableObjects\RhombObject.h" />
+    <ClInclude Include="GFX\DrawableObjects\SkyBox.h" />
     <ClInclude Include="GFX\DrawableObjects\TileObject.h" />
     <ClInclude Include="GFX\GFX.h" />
     <ClInclude Include="GFX\IndexBuffer.h" />

@@ -33,5 +33,5 @@ private:
 	float bounceDicrement = 0.01f;
 	float airResistanceDicrement = 0.01f;
 
-	DirectX::XMFLOAT3 sceneBorder{ 100.0f, 100.0f, 50.0f };
+	DirectX::XMFLOAT3 sceneBorder{ 50.0f, 50.0f, 50.0f };
 };

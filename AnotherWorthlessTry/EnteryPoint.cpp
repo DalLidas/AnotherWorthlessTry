@@ -1,6 +1,7 @@
 #include "Engine.h"
 
 //C4324 - Normal warnin padding 
+//
 
 int APIENTRY wWinMain(
     _In_ HINSTANCE hInstance,

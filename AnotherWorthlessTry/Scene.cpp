@@ -14,14 +14,14 @@ Scene::Scene()
 	p.radius = 2;
 	p.pointPos = DirectX::XMFLOAT3{ 4.0f, 0.0f, 0.0f };
 	p.velosity = DirectX::XMFLOAT3{ -0.0004f, 0.0f, 0.0 };
-	p.acceleration = DirectX::XMFLOAT3{ -0.000000f, 0.0f, 0.0 };
+	p.acceleration = DirectX::XMFLOAT3{ 0.000000f, 0.0f, 0.0 };
 
 	this->points.push_back(p);
 
 	p.radius = 2;
-	p.pointPos = DirectX::XMFLOAT3{ 4.0f, 0.0f, 0.0f };
-	p.velosity = DirectX::XMFLOAT3{ -0.0004f, 0.0f, 0.0 };
-	p.acceleration = DirectX::XMFLOAT3{ -0.000000f, 0.0f, 0.0 };
+	p.pointPos = DirectX::XMFLOAT3{ -2.0f, -2.0f, 0.0f };
+	p.velosity = DirectX::XMFLOAT3{ 0.0004f, 0.0004f, 0.0 };
+	p.acceleration = DirectX::XMFLOAT3{ 0.000000f, 0.0f, 0.0 };
 
 	this->points.push_back(p);
 }

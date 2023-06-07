@@ -18,11 +18,18 @@ bool GFX::Initialize(HWND hwnd, INT width, INT height)
 	return true;
 }
 
-void GFX::RenderFrame(const std::vector<Point>& points)
+void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border)
 {
 	float bgcolor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
 	this->deviceContext->ClearDepthStencilView(this->depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	//Draw SkyBox
+	skyBox.SetPosition(5, 5, 5);
+	skyBox.SetScaleX(3);
+
+	skyBox.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+
 
 	this->deviceContext->IASetInputLayout(this->vertexShader.GetInputLayout());
 	this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -33,18 +40,41 @@ void GFX::RenderFrame(const std::vector<Point>& points)
 	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
 	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
 
-	
 
-	//Draw
-	for (auto point = points.begin(); point != points.end(); ++point) {
-		//tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix
-		rhombObject.SetPosition(point->pointPos);
-		rhombObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
-	
-		//sphereObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+	//Draw Border
+	tileObject.SetScale(2.0f);
+	tileObject.SetPosition(0,0,0);
+
+
+	tileObject.SetRotation(XM_PIDIV2, 0, 0);
+	tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+
+
+	tileObject.SetRotation(0, XM_PIDIV2, 0);
+	tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+
+	for (int x = 0; x < 2; ++x) {
+		for (int y = 0; y < 2; ++y) {
+			for (int z = 0; z < 2; ++z) {
+				cubeObject.SetPosition(x*border.x, y * border.y, z * border.z);
+				cubeObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+			}
+		}
 	}
 
-	//m_shape->Draw(XMMatrixIdentity(), camera.GetViewMatrix(), camera.GetProjectionMatrix());
+	////Draw Object
+	//for (auto point = points.begin(); point != points.end(); ++point) {
+	//	//tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix
+	//	rhombObject.SetPosition(point->pointPos);
+	//	rhombObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+	//
+	//	//sphereObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+	//}
+	////m_shape->Draw(XMMatrixIdentity(), camera.GetViewMatrix(), camera.GetProjectionMatrix());
+
+
+
+	
 
 	//Draw Text
 	static int fpsCounter = 0;
@@ -245,6 +275,7 @@ bool GFX::InitializeScene()
 	tileObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 	rhombObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 	cubeObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+	skyBox.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 
 	m_shape = GeometricPrimitive::CreateSphere(this->deviceContext.Get());
 	//sphereObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);

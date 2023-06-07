@@ -1,13 +1,14 @@
 #pragma once
 
+#pragma once
+
 #include "..//ConstantBuffer.h"
 #include "..//IndexBuffer.h"
 #include "..//VertexBuffer.h"
 #include "..//Vertex.h"
 
 using namespace DirectX;
-
-class TileObject{
+class TileObject {
 public:
 	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader);
 
