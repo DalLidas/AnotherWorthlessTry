@@ -6,6 +6,8 @@
 #include "Input/Keyboard/KeyboardClass.h"
 #include "Input/Mouse/MouseClass.h"
 #include "GFX/GFX.h"
+#include "Physics/DotPhisics.h"
+#include "Scene.h"
 
 class WindowContainer {
 public:
@@ -17,7 +19,10 @@ protected:
 	KeyboardClass keyboard;
 	MouseClass mouse;
 	GFX gfx;
+	DotPhysics physics;
+
+	Scene scene;
 
 private:
-
+	
 };

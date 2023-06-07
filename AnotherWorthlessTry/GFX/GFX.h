@@ -11,13 +11,17 @@
 #include "ConstantBuffer.h"
 #include "Camera.h"
 #include "..//Timer.h"
+#include "..//Point.h"
 
-#include "DrawableObjects/SphereObject.h"
+
+#include "DrawableObjects/TileObject.h"
+#include "DrawableObjects/RhombObject.h"
+//#include "DrawableObjects/SphereObject.h"
 
 class GFX {
 public: 
 	bool Initialize(HWND hwnd, INT width, INT height);
-	void RenderFrame();
+	void RenderFrame(const std::vector<Point>& points);
 	Camera camera;
 
 private:
@@ -34,7 +38,9 @@ private:
 	PixelShader pixelShader;
 	ConstantBuffer<CB_VS_vertexshader> constantBuffer;
 
-	SphereObject SphereObject;
+	TileObject tileObject;
+	RhombObject rhombObject;
+	//SphereObject sphereObject;
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer = nullptr;
@@ -44,8 +50,6 @@ private:
 
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont> spriteFont;
-
-
 
 	INT windowWidth = 0;
 	INT windowHeight = 0;

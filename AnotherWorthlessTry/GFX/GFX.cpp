@@ -18,7 +18,7 @@ bool GFX::Initialize(HWND hwnd, INT width, INT height)
 	return true;
 }
 
-void GFX::RenderFrame()
+void GFX::RenderFrame(const std::vector<Point>& points)
 {
 	float bgcolor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
@@ -34,11 +34,19 @@ void GFX::RenderFrame()
 	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
 
 
+
 	//Draw
-	{
-		SphereObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+	for (auto point = points.begin(); point != points.end(); ++point) {
+		//tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix
+		rhombObject.SetPosition(point->pointPos);
+		rhombObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+
+	
+
+		//sphereObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
 	}
 	
+
 	//Draw Text
 	static int fpsCounter = 0;
 	static std::string fpsString = "FPS: 0";
@@ -234,7 +242,11 @@ bool GFX::InitializeShaders()
 
 bool GFX::InitializeScene()
 {
-	SphereObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+
+	tileObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+	rhombObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+	//sphereObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+
 
 	//Initialize Constant Buffer(s)
 	HRESULT hr = this->constantBuffer.Initialize(this->device.Get(), this->deviceContext.Get());

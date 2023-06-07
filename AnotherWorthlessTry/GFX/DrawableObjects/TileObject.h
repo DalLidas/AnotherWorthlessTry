@@ -1,7 +1,5 @@
 #pragma once
 
-#include "vector"
-
 #include "..//ConstantBuffer.h"
 #include "..//IndexBuffer.h"
 #include "..//VertexBuffer.h"
@@ -9,7 +7,7 @@
 
 using namespace DirectX;
 
-class SphereObject {
+class TileObject {
 public:
 	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader);
 
@@ -30,7 +28,7 @@ public:
 	void SetRotation(const XMFLOAT3& rot);
 	void SetRotation(float x, float y, float z);
 	void AdjustRotation(const XMVECTOR& rot);
-	void AdjustRotation(const XMFLOAT3& rot); 
+	void AdjustRotation(const XMFLOAT3& rot);
 	void AdjustRotation(float x, float y, float z);
 	void SetLookAtPos(XMFLOAT3 lookAtPos);
 	const XMVECTOR& GetForwardVector();
@@ -39,8 +37,6 @@ public:
 	const XMVECTOR& GetLeftVector();
 
 private:
-	std::vector<Vertex> CreateSphereVertex();
-	//DWORD CreateSphereIndex();
 	void UpdateWorldMatrix();
 
 	ID3D11Device* device = nullptr;

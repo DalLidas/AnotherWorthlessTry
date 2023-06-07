@@ -28,6 +28,9 @@
     <Filter Include="GFX\DrawableObjects">
       <UniqueIdentifier>{d305ff75-7bd6-4636-be3e-94103a96d431}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{54b7c154-bee5-48eb-98a7-79dbe27e5b24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EnteryPoint.cpp">
@@ -45,7 +48,7 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WindowConteiner.cpp">
+    <ClCompile Include="WindowContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Input\Keyboard\KeyboardClass.cpp">
@@ -75,7 +78,13 @@
     <ClCompile Include="GFX\Camera.cpp">
       <Filter>GFX</Filter>
     </ClCompile>
-    <ClCompile Include="GFX\DrawableObjects\SphereObject.cpp">
+    <ClCompile Include="GFX\DrawableObjects\TileObject.cpp">
+      <Filter>GFX\DrawableObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GFX\DrawableObjects\RhombObject.cpp">
       <Filter>GFX\DrawableObjects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,8 +146,17 @@
     <ClInclude Include="GFX\Camera.h">
       <Filter>GFX</Filter>
     </ClInclude>
-    <ClInclude Include="GFX\DrawableObjects\SphereObject.h">
+    <ClInclude Include="GFX\DrawableObjects\TileObject.h">
       <Filter>GFX\DrawableObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\DrawableObjects\RhombObject.h">
+      <Filter>GFX\DrawableObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

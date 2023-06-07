@@ -83,6 +83,8 @@ void Engine::Update()
         this->gfx.camera.AdjustPosition(0.0f, -cameraSpeed * dt, 0.0f);
     }
 
+
+
 #ifdef INPUT_DEBUG_MSG
     while (!keyboard.CharBufferIsEmpty()) {
         unsigned char ch = keyboard.ReadChar();
@@ -141,5 +143,5 @@ void Engine::Update()
 
 void Engine::RenderFrame()
 {
-    gfx.RenderFrame();
+    gfx.RenderFrame(scene.GetPoints());
 }

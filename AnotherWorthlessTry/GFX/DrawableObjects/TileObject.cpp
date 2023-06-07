@@ -1,75 +1,34 @@
-#include "SphereObject.h"
+#include "TileObject.h"
 
-std::vector<Vertex> SphereObject::CreateSphereVertex()
-{
-	int numSlices = 10;
-	int numSegments = 10;
-	float sphereRadius = 1.0f;
-	XMFLOAT3 color = { 1.0f, 0.0f, 1.0f };
-
-	std::vector<Vertex> verts;
-
-	int count = 0; 
-
-	float phi = 0.0f;
-	const float phiStep = XM_PI / numSlices;
-
-	float theta = 0.0f;
-	const float thetaStep = XM_2PI / numSegments;
-
-	while (count < numSlices)
-	{
-		int count2 = 0;
-		phi += phiStep;
-
-		while (count2 < numSegments)
-		{
-			
-			const float xzRadius = fabsf(sphereRadius * cosf(phi));
-
-			theta += thetaStep;
-
-			Vertex v;
-			v.pos.x = xzRadius * cosf(currTheta);
-			v.pos.y = sphereRadius * sinf(phi);
-			v.pos.z = xzRadius * sinf(currTheta);
-
-			v.color = color;
-
-			verts.push_back(v);
-			count2++;
-		}
-		count++;
-	}
-	return verts;
-}
-
-//DWORD SphereObject::CreateSphereIndex()
-//{
-//}
-
-bool SphereObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader)
+bool TileObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader)
 {
 	this->device = device;
 	this->deviceContext = deviceContext;
 	this->cbVsVertexshader = &cbVsVertexshader;
 
+	
 	//Square
-	std::vector<Vertex> v = CreateSphereVertex();
+	Vertex v[] =
+	{
+		Vertex(-1.0f,  -1.0f, 0.0f, 1.0f, 0.0f, 0.0f), //Bottom Left   - [0]
+		Vertex(-1.0f,   1.0f, 0.0f, 1.0f, 0.0f, 0.0f), //Top Left      - [1]
+		Vertex(1.0f,    1.0f, 0.0f, 1.0f, 1.0f, 0.0f), //Top Right     - [2]
+		Vertex(1.0f,   -1.0f, 0.0f, 1.0f, 0.0f, 0.0f), //Bottom Right  - [3]
+	};
 
 	//Load Vertex Data
-	HRESULT hr = this->vertexBuffer.Initialize(this->device, v.data(), v.size());
+	HRESULT hr = this->vertexBuffer.Initialize(this->device, v, ARRAYSIZE(v));
 
-	//DWORD indices[] =
-	//{
-	//	0, 1, 2,
-	//	0, 2, 3
-	//};
+	DWORD indices[] =
+	{
+		0, 1, 2,
+		0, 2, 3
+	};
 
-	////Load Index Data
-	//hr = this->indexBuffer.Initialize(this->device, indices, ARRAYSIZE(indices));
+	//Load Index Data
+	hr = this->indexBuffer.Initialize(this->device, indices, ARRAYSIZE(indices));
 
-
+	
 
 	this->SetPosition(0.0f, 0.0f, 0.0f);
 	this->SetRotation(0.0f, 0.0f, 0.0f);
@@ -77,7 +36,7 @@ bool SphereObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	return true;
 }
 
-void SphereObject::Draw(const XMMATRIX& viewProjectionMatrix)
+void TileObject::Draw(const XMMATRIX& viewProjectionMatrix)
 {
 	//Update Constant buffer with WVP Matrix
 	this->cbVsVertexshader->data.mat = this->worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
@@ -85,19 +44,18 @@ void SphereObject::Draw(const XMMATRIX& viewProjectionMatrix)
 	this->cbVsVertexshader->ApplyChanges();
 	this->deviceContext->VSSetConstantBuffers(0, 1, this->cbVsVertexshader->GetAddressOf());
 
+	//this->deviceContext->PSSetShaderResources(0, 1, &this->texture); //Set Texture
 	this->deviceContext->IASetIndexBuffer(this->indexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
 	
 	UINT offset = 0;
 
 	this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), vertexBuffer.StridePtr(), &offset);
-
-	//this->deviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	this->deviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	this->deviceContext->DrawIndexed(indexBuffer.BufferSize(), 0, 0);
+
 }
 
-
-
-void SphereObject::UpdateWorldMatrix()
+void TileObject::UpdateWorldMatrix()
 {
 	this->worldMatrix = XMMatrixRotationRollPitchYaw(this->rot.x, this->rot.y, this->rot.z) * XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z);
 	XMMATRIX vecRotationMatrix = XMMatrixRotationRollPitchYaw(0.0f, this->rot.y, 0.0f);
@@ -107,55 +65,55 @@ void SphereObject::UpdateWorldMatrix()
 	this->vecRight = XMVector3TransformCoord(this->DEFAULT_RIGHT_VECTOR, vecRotationMatrix);
 }
 
-const XMVECTOR& SphereObject::GetPositionVector() const
+const XMVECTOR& TileObject::GetPositionVector() const
 {
 	return this->posVector;
 }
 
-const XMFLOAT3& SphereObject::GetPositionFloat3() const
+const XMFLOAT3& TileObject::GetPositionFloat3() const
 {
 	return this->pos;
 }
 
-const XMVECTOR& SphereObject::GetRotationVector() const
+const XMVECTOR& TileObject::GetRotationVector() const
 {
 	return this->rotVector;
 }
 
-const XMFLOAT3& SphereObject::GetRotationFloat3() const
+const XMFLOAT3& TileObject::GetRotationFloat3() const
 {
 	return this->rot;
 }
 
-void SphereObject::SetPosition(const XMVECTOR& pos)
+void TileObject::SetPosition(const XMVECTOR& pos)
 {
 	XMStoreFloat3(&this->pos, pos);
 	this->posVector = pos;
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::SetPosition(const XMFLOAT3& pos)
+void TileObject::SetPosition(const XMFLOAT3& pos)
 {
 	this->pos = pos;
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::SetPosition(float x, float y, float z)
+void TileObject::SetPosition(float x, float y, float z)
 {
 	this->pos = XMFLOAT3(x, y, z);
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::AdjustPosition(const XMVECTOR& pos)
+void TileObject::AdjustPosition(const XMVECTOR& pos)
 {
 	this->posVector += pos;
 	XMStoreFloat3(&this->pos, this->posVector);
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::AdjustPosition(const XMFLOAT3& pos)
+void TileObject::AdjustPosition(const XMFLOAT3& pos)
 {
 	this->pos.x += pos.y;
 	this->pos.y += pos.y;
@@ -164,7 +122,7 @@ void SphereObject::AdjustPosition(const XMFLOAT3& pos)
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::AdjustPosition(float x, float y, float z)
+void TileObject::AdjustPosition(float x, float y, float z)
 {
 	this->pos.x += x;
 	this->pos.y += y;
@@ -173,35 +131,35 @@ void SphereObject::AdjustPosition(float x, float y, float z)
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::SetRotation(const XMVECTOR& rot)
+void TileObject::SetRotation(const XMVECTOR& rot)
 {
 	this->rotVector = rot;
 	XMStoreFloat3(&this->rot, rot);
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::SetRotation(const XMFLOAT3& rot)
+void TileObject::SetRotation(const XMFLOAT3& rot)
 {
 	this->rot = rot;
 	this->rotVector = XMLoadFloat3(&this->rot);
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::SetRotation(float x, float y, float z)
+void TileObject::SetRotation(float x, float y, float z)
 {
 	this->rot = XMFLOAT3(x, y, z);
 	this->rotVector = XMLoadFloat3(&this->rot);
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::AdjustRotation(const XMVECTOR& rot)
+void TileObject::AdjustRotation(const XMVECTOR& rot)
 {
 	this->rotVector += rot;
 	XMStoreFloat3(&this->rot, this->rotVector);
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::AdjustRotation(const XMFLOAT3& rot)
+void TileObject::AdjustRotation(const XMFLOAT3& rot)
 {
 	this->rot.x += rot.x;
 	this->rot.y += rot.y;
@@ -210,7 +168,7 @@ void SphereObject::AdjustRotation(const XMFLOAT3& rot)
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::AdjustRotation(float x, float y, float z)
+void TileObject::AdjustRotation(float x, float y, float z)
 {
 	this->rot.x += x;
 	this->rot.y += y;
@@ -219,7 +177,7 @@ void SphereObject::AdjustRotation(float x, float y, float z)
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::SetLookAtPos(XMFLOAT3 lookAtPos)
+void TileObject::SetLookAtPos(XMFLOAT3 lookAtPos)
 {
 	//Verify that look at pos is not the same as cam pos. They cannot be the same as that wouldn't make sense and would result in undefined behavior.
 	if (lookAtPos.x == this->pos.x && lookAtPos.y == this->pos.y && lookAtPos.z == this->pos.z)
@@ -247,22 +205,22 @@ void SphereObject::SetLookAtPos(XMFLOAT3 lookAtPos)
 	this->SetRotation(pitch, yaw, 0.0f);
 }
 
-const XMVECTOR& SphereObject::GetForwardVector()
+const XMVECTOR& TileObject::GetForwardVector()
 {
 	return this->vecForward;
 }
 
-const XMVECTOR& SphereObject::GetRightVector()
+const XMVECTOR& TileObject::GetRightVector()
 {
 	return this->vecRight;
 }
 
-const XMVECTOR& SphereObject::GetBackwardVector()
+const XMVECTOR& TileObject::GetBackwardVector()
 {
 	return this->vecBackward;
 }
 
-const XMVECTOR& SphereObject::GetLeftVector()
+const XMVECTOR& TileObject::GetLeftVector()
 {
 	return this->vecLeft;
 }

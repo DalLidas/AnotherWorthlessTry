@@ -152,17 +152,19 @@
     <ClCompile Include="ExceptionLoger.cpp" />
     <ClCompile Include="GFX\AdapterReader.cpp" />
     <ClCompile Include="GFX\Camera.cpp" />
-    <ClCompile Include="GFX\DrawableObjects\SphereObject.cpp" />
+    <ClCompile Include="GFX\DrawableObjects\RhombObject.cpp" />
+    <ClCompile Include="GFX\DrawableObjects\TileObject.cpp" />
     <ClCompile Include="GFX\GFX.cpp" />
     <ClCompile Include="GFX\Shaders.cpp" />
     <ClCompile Include="Input\Keyboard\KeyboardClass.cpp" />
     <ClCompile Include="Input\Keyboard\KeyboardEvent.cpp" />
     <ClCompile Include="Input\Mouse\MouseClass.cpp" />
     <ClCompile Include="Input\Mouse\MouseEvent.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="StringConverter.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="WindowConteiner.cpp" />
+    <ClCompile Include="WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExceptionLoger.h" />
@@ -171,16 +173,19 @@
     <ClInclude Include="GFX\Camera.h" />
     <ClInclude Include="GFX\ConstantBuffer.h" />
     <ClInclude Include="GFX\ConstantBufferTypes.h" />
-    <ClInclude Include="GFX\DrawableObjects\SphereObject.h" />
+    <ClInclude Include="GFX\DrawableObjects\RhombObject.h" />
+    <ClInclude Include="GFX\DrawableObjects\TileObject.h" />
     <ClInclude Include="GFX\GFX.h" />
     <ClInclude Include="GFX\IndexBuffer.h" />
     <ClInclude Include="GFX\Shaders.h" />
     <ClInclude Include="GFX\Vertex.h" />
     <ClInclude Include="GFX\VertexBuffer.h" />
+    <ClInclude Include="Point.h" />
     <ClInclude Include="Input\Keyboard\KeyboardClass.h" />
     <ClInclude Include="Input\Keyboard\KeyboardEvent.h" />
     <ClInclude Include="Input\Mouse\MouseClass.h" />
     <ClInclude Include="Input\Mouse\MouseEvent.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WindowConteiner.h" />
     <ClInclude Include="Window.h" />
