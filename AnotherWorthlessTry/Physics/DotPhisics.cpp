@@ -145,7 +145,6 @@ Point DotPhysics::BounceFromBorder(const Point& point)
         point.acceleration
     );
 
-}
 
 void DotPhysics::SetStates(bool dicrimentState, bool airResistanceState)
 {
