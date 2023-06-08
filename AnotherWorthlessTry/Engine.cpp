@@ -107,7 +107,8 @@ void Engine::Update()
         bufPoint = physics.Move(this->scene.GetPoints().at(i), 2);
 
         if (physics.BorderCollision(bufPoint)) {
-            bufPoint = physics.Move(bufPoint);
+
+            bufPoint = physics.Move(physics.BounceFromBorder(bufPoint), 10);
         }
         else {
             for (size_t j = 0; j < this->scene.GetPoints().size(); ++j) {

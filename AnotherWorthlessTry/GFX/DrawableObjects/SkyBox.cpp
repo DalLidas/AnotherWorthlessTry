@@ -27,32 +27,22 @@ bool SkyBox::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext
 
 	DWORD indices[] =
 	{
-		0, 1, 2, //FRONT
-		0, 2, 3, //FRONT
-		4, 7, 6, //BACK 
-		4, 6, 5, //BACK
-		3, 2, 6, //RIGHT SIDE
-		3, 6, 7, //RIGHT SIDE
-		4, 5, 1, //LEFT SIDE
-		4, 1, 0, //LEFT SIDE
-		1, 5, 6, //TOP
-		1, 6, 2, //TOP
-		0, 3, 7, //BOTTOM
-		0, 7, 4, //BOTTOM
+		2, 1, 0, //FRONT
+		3, 2, 0, //FRONT
+		6, 7, 4, //BACK 
+		5, 6, 4, //BACK
+		6, 2, 3, //RIGHT SIDE
+		7, 6, 3, //RIGHT SIDE
+		1, 5, 4, //LEFT SIDE
+		0, 1, 4, //LEFT SIDE
+		6, 5, 1, //TOP
+		2, 6, 1, //TOP
+		7, 3, 0, //BOTTOM
+		4, 7, 0, //BOTTOM
 	};
 
 	//Load Index Data
 	hr = this->indexBuffer.Initialize(this->device, indices, ARRAYSIZE(indices));
-	if (FAILED(hr))
-		return false;
-
-	D3D11_RASTERIZER_DESC resterazerDesc;
-	ZeroMemory(&resterazerDesc, sizeof(resterazerDesc));
-
-	resterazerDesc.FillMode = D3D11_FILL_SOLID;
-	resterazerDesc.CullMode = D3D11_CULL_FRONT;
-
-	hr = this->device->CreateRasterizerState(&resterazerDesc, this->resterazerState.GetAddressOf());
 	if (FAILED(hr))
 		return false;
 
@@ -68,8 +58,6 @@ void SkyBox::Draw(const XMMATRIX& viewProjectionMatrix)
 	this->cbVsVertexshader->data.mat = XMMatrixTranspose(this->cbVsVertexshader->data.mat);
 	this->cbVsVertexshader->ApplyChanges();
 	this->deviceContext->VSSetConstantBuffers(0, 1, this->cbVsVertexshader->GetAddressOf());
-
-	this->deviceContext->RSSetState(this->resterazerState.Get());
 
 	this->deviceContext->IASetIndexBuffer(this->indexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
 

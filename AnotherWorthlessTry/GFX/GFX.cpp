@@ -24,35 +24,23 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border)
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
 	this->deviceContext->ClearDepthStencilView(this->depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	//Draw SkyBox
-	skyBox.SetPosition(5, 5, 5);
-	skyBox.SetScaleX(3);
-
-	skyBox.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
-
+	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
+	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
 
 	this->deviceContext->IASetInputLayout(this->vertexShader.GetInputLayout());
 	this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	this->deviceContext->RSSetState(this->resterazerState.Get());
 	this->deviceContext->OMSetDepthStencilState(this->depthStencilState.Get(), 0);
 	this->deviceContext->OMSetBlendState(NULL, NULL, 0xFFFFFFFF);
+	
 
-	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
-	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
+	//Draw SkyBox
+	skyBox.SetPosition(border.x/2, border.y / 2, border.z / 2);
+	skyBox.SetScale(border.x);
 
+	skyBox.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
 
-	//Draw Border
-	tileObject.SetScale(2.0f);
-	tileObject.SetPosition(0,0,0);
-
-
-	tileObject.SetRotation(XM_PIDIV2, 0, 0);
-	tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
-
-
-	tileObject.SetRotation(0, XM_PIDIV2, 0);
-	tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
-
+	//Draw Corners
 	for (int x = 0; x < 2; ++x) {
 		for (int y = 0; y < 2; ++y) {
 			for (int z = 0; z < 2; ++z) {
@@ -62,15 +50,15 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border)
 		}
 	}
 
-	////Draw Object
-	//for (auto point = points.begin(); point != points.end(); ++point) {
-	//	//tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix
-	//	rhombObject.SetPosition(point->pointPos);
-	//	rhombObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
-	//
-	//	//sphereObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
-	//}
-	////m_shape->Draw(XMMatrixIdentity(), camera.GetViewMatrix(), camera.GetProjectionMatrix());
+	//Draw Object
+	for (auto point = points.begin(); point != points.end(); ++point) {
+		//tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix
+		rhombObject.SetPosition(point->pointPos);
+		rhombObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+	
+		//sphereObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+	}
+	//m_shape->Draw(XMMatrixIdentity(), camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 
 

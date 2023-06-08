@@ -25,9 +25,10 @@ bool DotPhysics::ObjectCollision(const Point& point1, const Point& point2)
 
 bool DotPhysics::BorderCollision(const Point& point)
 {
-    return point.pointPos.x > sceneBorder.x || point.pointPos.x < 0 ||
-        point.pointPos.x > sceneBorder.y || point.pointPos.y < 0 ||
-        point.pointPos.x > sceneBorder.z || point.pointPos.z < 0;
+    return
+        point.pointPos.x + point.radius > sceneBorder.x || point.pointPos.x - point.radius < 0 ||
+        point.pointPos.y + point.radius > sceneBorder.y || point.pointPos.y - point.radius < 0 ||
+        point.pointPos.z + point.radius > sceneBorder.z || point.pointPos.z - point.radius < 0  ;
 
 }
 
@@ -138,9 +139,9 @@ Point DotPhysics::BounceFromBorder(const Point& point)
         point.radius,
         point.pointPos,
         DirectX::XMFLOAT3{
-        -point.velosity.x,
-            -point.velosity.y,
-            -point.velosity.z,
+            -1.0f * point.velosity.x,
+            -1.0f * point.velosity.y,
+            -1.0f * point.velosity.z,
     },
         point.acceleration
     );
