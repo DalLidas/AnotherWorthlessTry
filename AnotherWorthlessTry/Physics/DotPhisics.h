@@ -13,13 +13,13 @@ public:
 	//std::vector<Point> CalculateScene(const std::vector<Point>& points);
 
 	bool ObjectCollision(const Point& point1, const Point& point2);
-	bool BorderCollision(const Point& point);
+	int BorderCollision(const Point& point);
 
 	Point Move(const Point& point, int num = 1);
 	Point Accelerate(const Point& point);
 
 	std::pair<Point, Point> BounceFromObject(const Point& point1, const Point& point2);
-	Point BounceFromBorder(const Point& point);
+	Point BounceFromBorder(const Point& point, int borderSide);
 
 	void SetStates(bool bounceDicrimentState = false, bool airResistanceState = false);
 	void SetBounceDicrement(float newBounceDicrement);
@@ -32,6 +32,15 @@ private:
 	bool  bounceDicrimentState = false;
 	float bounceDicrement = 0.01f;
 	float airResistanceDicrement = 0.01f;
+
+	enum borderSide {
+		topX = 1,
+		botX,
+		topY,
+		botY,
+		topZ,
+		botZ,
+	};
 
 	DirectX::XMFLOAT3 sceneBorder{ 50.0f, 50.0f, 50.0f };
 };

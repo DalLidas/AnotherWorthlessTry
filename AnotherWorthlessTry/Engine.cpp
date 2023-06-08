@@ -104,11 +104,11 @@ void Engine::Update()
 
     for (size_t i = 0; i < this->scene.GetPoints().size(); ++i) {
         Point bufPoint{};
+        int colideBorderSide = 0;
         bufPoint = physics.Move(this->scene.GetPoints().at(i), 2);
 
-        if (physics.BorderCollision(bufPoint)) {
-
-            bufPoint = physics.Move(physics.BounceFromBorder(bufPoint), 10);
+        if (colideBorderSide = physics.BorderCollision(bufPoint)) {
+            bufPoint = physics.Move(physics.BounceFromBorder(bufPoint, colideBorderSide), 10);
         }
         else {
             for (size_t j = 0; j < this->scene.GetPoints().size(); ++j) {
