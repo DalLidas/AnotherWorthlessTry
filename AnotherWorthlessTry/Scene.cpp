@@ -32,6 +32,11 @@ std::vector<Point> Scene::GetPoints() const
 	return this->points;
 }
 
+DirectX::XMFLOAT3 Scene::GetPointOfGod() const
+{
+	return this->pointOfGod;
+}
+
 DirectX::XMFLOAT3 Scene::GetSceneBorder() const
 {
 	return this->sceneBorder;
@@ -46,6 +51,11 @@ void Scene::SetPoints(const std::vector<Point>& newPoints)
 void Scene::SetPoint(const Point& newPoint, size_t index)
 {
 	this->points.at(index) = newPoint;
+}
+
+void Scene::SetPointOfGod(DirectX::XMFLOAT3 newPointOfGod)
+{
+	this->pointOfGod = newPointOfGod;
 }
 
 void Scene::SetSceneBorder(const DirectX::XMFLOAT3& newSceneBorder)

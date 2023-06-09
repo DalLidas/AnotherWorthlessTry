@@ -10,10 +10,12 @@ public:
 	Scene();
 
 	std::vector<Point> GetPoints() const;
+	DirectX::XMFLOAT3 GetPointOfGod() const;
 	DirectX::XMFLOAT3 GetSceneBorder() const;
 
 	void SetPoints(const std::vector<Point>& newPoints);
 	void SetPoint(const Point& newPoint, size_t index);
+	void SetPointOfGod(DirectX::XMFLOAT3);
 	void SetSceneBorder(const DirectX::XMFLOAT3& newSceneBorder);
 
 	void createPoint();
@@ -22,7 +24,7 @@ public:
 
 private:
 	DirectX::XMFLOAT3 sceneBorder{ 20.0f, 20.0f, 20.0f };
-	DirectX::XMFLOAT3 pointOfGod { 40.0f, 40.0f, 0.0f };
+	DirectX::XMFLOAT3 pointOfGod { 10.0f, 15.0f, 10.0f };
 	std::vector<Point> points;
 
 	const DirectX::XMFLOAT3 DEFAULT_VELOSITY { 0.001f, 0.005f, 0.0f };

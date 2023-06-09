@@ -31,6 +31,9 @@
     <Filter Include="Physics">
       <UniqueIdentifier>{54b7c154-bee5-48eb-98a7-79dbe27e5b24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GFX\ImGui">
+      <UniqueIdentifier>{78f49b03-4df2-4f73-9285-c2d772ca413b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EnteryPoint.cpp">
@@ -98,6 +101,24 @@
     </ClCompile>
     <ClCompile Include="GFX\DrawableObjects\SphereObject.cpp">
       <Filter>GFX\DrawableObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="GFX\ImGui\imgui.cpp">
+      <Filter>GFX\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="GFX\ImGui\imgui_demo.cpp">
+      <Filter>GFX\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="GFX\ImGui\imgui_draw.cpp">
+      <Filter>GFX\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="GFX\ImGui\imgui_impl_dx11.cpp">
+      <Filter>GFX\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="GFX\ImGui\imgui_impl_win32.cpp">
+      <Filter>GFX\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="GFX\ImGui\imgui_widgets.cpp">
+      <Filter>GFX\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +199,33 @@
     </ClInclude>
     <ClInclude Include="GFX\DrawableObjects\SphereObject.h">
       <Filter>GFX\DrawableObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\ImGui\imconfig.h">
+      <Filter>GFX\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\ImGui\imgui.h">
+      <Filter>GFX\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\ImGui\imgui_impl_dx11.h">
+      <Filter>GFX\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\ImGui\imgui_impl_win32.h">
+      <Filter>GFX\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\ImGui\imgui_internal.h">
+      <Filter>GFX\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\ImGui\imstb_rectpack.h">
+      <Filter>GFX\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\ImGui\imstb_textedit.h">
+      <Filter>GFX\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX\ImGui\imstb_truetype.h">
+      <Filter>GFX\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="BindImGui.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

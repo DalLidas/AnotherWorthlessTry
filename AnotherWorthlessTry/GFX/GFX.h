@@ -11,7 +11,13 @@
 #include "ConstantBuffer.h"
 #include "Camera.h"
 #include "..//Timer.h"
+
 #include "..//Point.h"
+
+#include "ImGUI\\imgui.h"
+#include "ImGUI\\imgui_impl_win32.h"
+#include "ImGUI\\imgui_impl_dx11.h"
+#include "../BindImGui.h"
 
 #include "DrawableObjects/TileObject.h"
 #include "DrawableObjects/RhombObject.h"
@@ -24,7 +30,7 @@
 class GFX {
 public: 
 	bool Initialize(HWND hwnd, INT width, INT height);
-	void RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border);
+	void RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, BindMSG& imGuiMsg);
 	Camera camera;
 
 private:

@@ -6,6 +6,8 @@
 #include "WindowConteiner.h"
 #include "Input/Keyboard/KeyboardClass.h"
 
+#include "BindImGui.h"
+
 class Engine : WindowContainer{
 public:
     BOOL Initialize(
@@ -17,10 +19,11 @@ public:
     );
 
     BOOL ProcessMessages();
-    void Update();
-    void RenderFrame();
+    void Update(BindMSG& imGuiMsg);
+    void RenderFrame(BindMSG& imGuiMsg);
+
+    BindMSG imGuiMsg{};
 
 private:
     Timer timer;
-     
 };

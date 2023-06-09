@@ -15,12 +15,20 @@ bool GFX::Initialize(HWND hwnd, INT width, INT height)
 	if (!InitializeScene())
 		return false;
 
+	//Setup ImGui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplWin32_Init(hwnd);
+	ImGui_ImplDX11_Init(this->device.Get(), this->deviceContext.Get());
+	ImGui::StyleColorsDark();
+
 	return true;
 }
 
-void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border)
+void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, BindMSG& imGuiMsg)
 {
-	float bgcolor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float bgcolor[] = { 76.0f / 255.0f, 86.0f / 255.0f, 106.0f / 255.0f, 1.0f };
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
 	this->deviceContext->ClearDepthStencilView(this->depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -73,6 +81,31 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border)
 	spriteBatch->Begin();
 	spriteFont->DrawString(spriteBatch.get(), StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 	spriteBatch->End();
+
+
+
+	static int counter = 0;
+	// Start the Dear ImGui frame
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+	//Create ImGui Test Window
+	ImGui::Begin("Test");
+
+	ImGui::Text("Hello, world %d", 123);
+	if (ImGui::Button("Physics On/Off"))
+		imGuiMsg.bounceDicrimentState = !imGuiMsg.bounceDicrimentState;
+	/*ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
+	ImGui::SliderFloat("float", &f, 0.0f, 1.0f);*/
+
+	ImGui::End();
+	//Assemble Together Draw Data
+	ImGui::Render();
+	//Render Draw Data
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	
+
 
 	this->swapChain->Present(0, NULL);
 }

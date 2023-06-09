@@ -17,8 +17,8 @@ int APIENTRY wWinMain(
     engine.Initialize(hInstance, "MyEngine", "MyEngineClass", 800, 600);
 
     while (engine.ProcessMessages()) {
-        engine.Update();
-        engine.RenderFrame();
+        engine.Update(engine.imGuiMsg);
+        engine.RenderFrame(engine.imGuiMsg);
     }
     
 	return 0;

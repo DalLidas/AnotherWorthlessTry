@@ -29,9 +29,8 @@ BOOL Engine::ProcessMessages()
     return  this->window.ProcessMessages();
 }
 
-void Engine::Update()
+void Engine::Update(BindMSG& imGuiMsg)
 {
-
     float dt = static_cast<float>(timer.GetMilisecondsElapsed());
     timer.Restart();
 
@@ -88,17 +87,12 @@ void Engine::Update()
         this->gfx.camera.AdjustPosition(0.0f, -cameraSpeed * dt, 0.0f);
     }
 
-
-    //Scene
-    if (keyboard.KeyIsPressed('C'))
-    {
-        static float i = 0.0f;
-        XMFLOAT3 f{ i, i, i };
-        i += 0.001f;
-        
-        this->scene.createPoint(f);
-    }
-
+    //ReadImGuiMsg
+    scene.SetPointOfGod(imGuiMsg.pointOfGod);
+    ///if(){
+       // scene.createPoint();
+    physics.SetStates(imGuiMsg.bounceDicrimentState, imGuiMsg.airResistanceDicrement);    
+    
     //Physics
     physics.SetDeltaTime(dt);   
 
@@ -127,8 +121,7 @@ void Engine::Update()
         this->scene.SetPoint(bufPoint, i);
         this->scene.SetPoint(physics.Accelerate(bufPoint), i);
     }
-   
-
+    
 
 #ifdef INPUT_DEBUG_MSG
     while (!keyboard.CharBufferIsEmpty()) {
@@ -186,7 +179,7 @@ void Engine::Update()
 #endif // INPUT_DEBUG_MSG
 }
 
-void Engine::RenderFrame()
+void Engine::RenderFrame(BindMSG& imGuiMsg)
 {
-    gfx.RenderFrame(scene.GetPoints(), scene.GetSceneBorder());
+    gfx.RenderFrame(scene.GetPoints(), scene.GetSceneBorder(), imGuiMsg);
 }

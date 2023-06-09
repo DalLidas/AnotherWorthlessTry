@@ -53,10 +53,10 @@ private:
 	XMMATRIX worldMatrix = XMMatrixIdentity();
 	XMMATRIX scaleMatrix = XMMatrixIdentity();
 
-	XMVECTOR posVector;
-	XMVECTOR rotVector;
-	XMFLOAT3 pos;
-	XMFLOAT3 rot;
+	XMVECTOR posVector{};
+	XMVECTOR rotVector{};
+	XMFLOAT3 pos{};
+	XMFLOAT3 rot{};
 
 	const XMVECTOR DEFAULT_FORWARD_VECTOR = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	const XMVECTOR DEFAULT_UP_VECTOR = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -64,8 +64,8 @@ private:
 	const XMVECTOR DEFAULT_LEFT_VECTOR = XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
 	const XMVECTOR DEFAULT_RIGHT_VECTOR = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 
-	XMVECTOR vecForward;
-	XMVECTOR vecLeft;
-	XMVECTOR vecRight;
-	XMVECTOR vecBackward;
+	XMVECTOR vecForward{};
+	XMVECTOR vecLeft{};
+	XMVECTOR vecRight{};
+	XMVECTOR vecBackward{};
 };

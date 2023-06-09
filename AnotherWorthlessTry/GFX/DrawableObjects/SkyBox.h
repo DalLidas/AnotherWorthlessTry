@@ -42,6 +42,6 @@ private:
 	XMMATRIX worldMatrix = XMMatrixIdentity();
 	XMMATRIX scaleMatrix = XMMatrixIdentity();
 
-	XMVECTOR posVector;
-	XMFLOAT3 pos;
+	XMVECTOR posVector{};
+	XMFLOAT3 pos{};
 };

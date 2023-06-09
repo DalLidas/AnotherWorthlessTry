@@ -28,7 +28,7 @@ public:
 private:
 	float dt = 0.0f; 
 
-	bool airResistanceState = false;
+	bool  airResistanceState = false;
 	bool  bounceDicrimentState = false;
 	float bounceDicrement = 0.01f;
 	float airResistanceDicrement = 0.01f;
