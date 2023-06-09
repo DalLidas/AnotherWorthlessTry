@@ -42,5 +42,5 @@ private:
 		botZ,
 	};
 
-	DirectX::XMFLOAT3 sceneBorder{ 50.0f, 50.0f, 50.0f };
+	DirectX::XMFLOAT3 sceneBorder{ 20.0f, 20.0f, 20.0f };
 };

@@ -89,9 +89,14 @@ void Engine::Update(BindMSG& imGuiMsg)
 
     //ReadImGuiMsg
     scene.SetPointOfGod(imGuiMsg.pointOfGod);
-    ///if(){
-       // scene.createPoint();
-    physics.SetStates(imGuiMsg.bounceDicrimentState, imGuiMsg.airResistanceDicrement);    
+    physics.SetStates(imGuiMsg.bounceDicrimentState, imGuiMsg.airResistanceDicrement);  
+    physics.SetBounceDicrement(imGuiMsg.bounceDicrement);
+    physics.SetAirResistanceDicrement(imGuiMsg.airResistanceDicrement);
+
+    //Scene
+    if (imGuiMsg.createState) {
+        scene.createPoint(scene.GetPointOfGod(), DirectX::XMFLOAT3{ (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f }, DirectX::XMFLOAT3{});
+    }
     
     //Physics
     physics.SetDeltaTime(dt);   
@@ -102,7 +107,8 @@ void Engine::Update(BindMSG& imGuiMsg)
         bufPoint = physics.Move(this->scene.GetPoints().at(i), 2);
 
         if (colideBorderSide = physics.BorderCollision(bufPoint)) {
-            bufPoint = physics.Move(physics.BounceFromBorder(bufPoint, colideBorderSide), 10);
+            
+            bufPoint = physics.BounceFromBorder(bufPoint, colideBorderSide);
         }
         else {
             for (size_t j = 0; j < this->scene.GetPoints().size(); ++j) {
@@ -111,8 +117,8 @@ void Engine::Update(BindMSG& imGuiMsg)
                         std::pair<Point, Point> bufPointPair{};
                         bufPointPair = physics.BounceFromObject(this->scene.GetPoints().at(i), this->scene.GetPoints().at(j));
 
-                        bufPoint = physics.Move(bufPointPair.first, 100);
-                        this->scene.SetPoint(physics.Move(bufPointPair.second, 100), j);
+                        bufPoint = physics.Move(bufPointPair.first, 10);
+                        this->scene.SetPoint(physics.Move(bufPointPair.second, 10), j);
                     }
                 }
             }

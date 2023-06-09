@@ -43,7 +43,7 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, 
 	
 
 	//Draw SkyBox
-	skyBox.SetPosition(border.x/2, border.y / 2, border.z / 2);
+	skyBox.SetPosition(border.x / 2.0f, border.y / 2.0f, border.z / 2.0f);
 	skyBox.SetScale(border.x);
 
 	skyBox.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
@@ -62,7 +62,7 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, 
 	for (auto point = points.begin(); point != points.end(); ++point) {
 		//tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix
 		sphereObject.SetPosition(point->pointPos);
-		sphereObject.SetScale(point->radius/4.0f);
+		sphereObject.SetScale(point->radius);
 
 		sphereObject.Draw(camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::White);
 	}
@@ -84,19 +84,22 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, 
 
 
 
-	static int counter = 0;
+	
 	// Start the Dear ImGui frame
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	//Create ImGui Test Window
-	ImGui::Begin("Test");
+	ImGui::Begin("Configuration Window");
 
 	ImGui::Text("Hello, world %d", 123);
-	if (ImGui::Button("Physics On/Off"))
-		imGuiMsg.bounceDicrimentState = !imGuiMsg.bounceDicrimentState;
-	/*ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
-	ImGui::SliderFloat("float", &f, 0.0f, 1.0f);*/
+
+
+	if (imGuiMsg.createState) imGuiMsg.createState = false;
+	if (ImGui::Button("Create point"))
+		imGuiMsg.createState = true;
+	//ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
+	//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
 
 	ImGui::End();
 	//Assemble Together Draw Data

@@ -137,22 +137,65 @@ std::pair<Point, Point> DotPhysics::BounceFromObject(const Point& point1, const 
 
 Point DotPhysics::BounceFromBorder(const Point& point, int borderSide)
 {
-    if (borderSide == topX || borderSide == botX) {
+    float bonusCord = point.radius + 0.2f;
+    switch (borderSide)
+    {
+    case(topX):
         return Point(
             point.radius,
-            point.pointPos,
             DirectX::XMFLOAT3{
-                -1.0f * point.velosity.x,
+                sceneBorder.x - bonusCord,
+                point.pointPos.y,
+                point.pointPos.z
+            },
+            DirectX::XMFLOAT3{
+            -1.0f * point.velosity.x,
                 point.velosity.y,
                 point.velosity.z,
             },
             point.acceleration
         );
-    }
-    else if (borderSide == topY || borderSide == botY) {
+
+    case(botX):
         return Point(
             point.radius,
-            point.pointPos,
+            DirectX::XMFLOAT3{
+                bonusCord,
+                point.pointPos.y,
+                point.pointPos.z
+            },
+            DirectX::XMFLOAT3{
+            -1.0f * point.velosity.x,
+                point.velosity.y,
+                point.velosity.z,
+            },
+            point.acceleration
+        );
+        
+    case(topY):
+        return Point(
+            point.radius,
+            DirectX::XMFLOAT3{
+                point.pointPos.x,
+                sceneBorder.y - bonusCord,
+                point.pointPos.z
+            },
+            DirectX::XMFLOAT3{
+                point.velosity.x,
+                -1.0f * point.velosity.y,
+                point.velosity.z,
+            },
+            point.acceleration
+        );
+
+    case(botY):
+        return Point(
+            point.radius,
+            DirectX::XMFLOAT3{
+                point.pointPos.x,
+                bonusCord,
+                point.pointPos.z
+            },
             DirectX::XMFLOAT3{
                 point.velosity.x,
                 -1.0f * point.velosity.y,
@@ -160,20 +203,40 @@ Point DotPhysics::BounceFromBorder(const Point& point, int borderSide)
         },
             point.acceleration
         );
-    }
-    else if (borderSide == topZ || borderSide == botZ) {
+
+    case(topZ):
         return Point(
             point.radius,
-            point.pointPos,
+            DirectX::XMFLOAT3{
+                point.pointPos.x,
+                point.pointPos.y,
+                sceneBorder.z - bonusCord
+            },
             DirectX::XMFLOAT3{
                 point.velosity.x,
                 point.velosity.y,
                 -1.0f * point.velosity.z,
-        },
+            },
             point.acceleration
         );
-    }
-    else {
+
+    case(botZ):
+        return Point(
+            point.radius,
+            DirectX::XMFLOAT3{
+                point.pointPos.x,
+                point.pointPos.y,
+                bonusCord
+            },
+            DirectX::XMFLOAT3{
+                point.velosity.x,
+                point.velosity.y,
+                -1.0f * point.velosity.z,
+            },
+            point.acceleration
+        );
+
+    default:
         return Point(
             point.radius,
             point.pointPos,
@@ -181,7 +244,6 @@ Point DotPhysics::BounceFromBorder(const Point& point, int borderSide)
             point.acceleration
         );
     }
-    
 }
 
 void DotPhysics::SetStates(bool dicrimentState, bool airResistanceState)

@@ -27,7 +27,7 @@ private:
 	DirectX::XMFLOAT3 pointOfGod { 10.0f, 15.0f, 10.0f };
 	std::vector<Point> points;
 
-	const DirectX::XMFLOAT3 DEFAULT_VELOSITY { 0.001f, 0.005f, 0.0f };
+	const DirectX::XMFLOAT3 DEFAULT_VELOSITY { 0.005f, 0.005f, 0.005f };
 	const DirectX::XMFLOAT3 DEFAULT_ACCELERATION { 0.0f, -0.000001f, 0.0f };
 
 	const DirectX::XMFLOAT3 ZERO_VELOSITY { 0.0f, 0.0f, 0.0f };

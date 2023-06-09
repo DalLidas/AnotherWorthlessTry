@@ -202,6 +202,7 @@
     <ClInclude Include="GFX\Vertex.h" />
     <ClInclude Include="GFX\VertexBuffer.h" />
     <ClInclude Include="BindImGui.h" />
+    <ClInclude Include="Physics\DotPhisics.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Input\Keyboard\KeyboardClass.h" />
     <ClInclude Include="Input\Keyboard\KeyboardEvent.h" />
