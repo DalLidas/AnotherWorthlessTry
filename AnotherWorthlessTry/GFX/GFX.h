@@ -16,11 +16,10 @@
 #include "DrawableObjects/TileObject.h"
 #include "DrawableObjects/RhombObject.h"
 #include "DrawableObjects/CubeObject.h"
+#include "DrawableObjects/SphereObject.h"
 #include "DrawableObjects/SkyBox.h"
 
 
-#include <GeometricPrimitive.h>
-//#include "DrawableObjects/SphereObject.h"
 
 class GFX {
 public: 
@@ -45,10 +44,8 @@ private:
 	TileObject tileObject;
 	RhombObject rhombObject;
 	CubeObject cubeObject;
+	SphereObject sphereObject;
 	SkyBox skyBox;
-
-	std::unique_ptr<DirectX::GeometricPrimitive> m_shape;
-	//SphereObject sphereObject;
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer = nullptr;

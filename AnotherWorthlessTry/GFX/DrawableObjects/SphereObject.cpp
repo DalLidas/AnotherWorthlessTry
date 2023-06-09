@@ -1,75 +1,11 @@
 #include "SphereObject.h"
 
-std::vector<Vertex> SphereObject::CreateSphereVertex()
+
+bool SphereObject::Initialize(ID3D11DeviceContext* deviceContext)
 {
-	int numSlices = 10;
-	int numSegments = 10;
-	float sphereRadius = 1.0f;
-	XMFLOAT3 color = { 1.0f, 0.0f, 1.0f };
-
-	std::vector<Vertex> verts;
-
-	int count = 0; 
-
-	float phi = 0.0f;
-	const float phiStep = XM_PI / numSlices;
-
-	float theta = 0.0f;
-	const float thetaStep = XM_2PI / numSegments;
-
-	while (count < numSlices)
-	{
-		int count2 = 0;
-		phi += phiStep;
-
-		while (count2 < numSegments)
-		{
-			
-			const float xzRadius = fabsf(sphereRadius * cosf(phi));
-
-			theta += thetaStep;
-
-			Vertex v;
-			v.pos.x = xzRadius * cosf(currTheta);
-			v.pos.y = sphereRadius * sinf(phi);
-			v.pos.z = xzRadius * sinf(currTheta);
-
-			v.color = color;
-
-			verts.push_back(v);
-			count2++;
-		}
-		count++;
-	}
-	return verts;
-}
-
-//DWORD SphereObject::CreateSphereIndex()
-//{
-//}
-
-bool SphereObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader)
-{
-	this->device = device;
 	this->deviceContext = deviceContext;
-	this->cbVsVertexshader = &cbVsVertexshader;
 
-	//Square
-	std::vector<Vertex> v = CreateSphereVertex();
-
-	//Load Vertex Data
-	HRESULT hr = this->vertexBuffer.Initialize(this->device, v.data(), v.size());
-
-	//DWORD indices[] =
-	//{
-	//	0, 1, 2,
-	//	0, 2, 3
-	//};
-
-	////Load Index Data
-	//hr = this->indexBuffer.Initialize(this->device, indices, ARRAYSIZE(indices));
-
-
+	this->shape = shape->CreateSphere(deviceContext);
 
 	this->SetPosition(0.0f, 0.0f, 0.0f);
 	this->SetRotation(0.0f, 0.0f, 0.0f);
@@ -77,22 +13,9 @@ bool SphereObject::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	return true;
 }
 
-void SphereObject::Draw(const XMMATRIX& viewProjectionMatrix)
+void SphereObject::Draw(const XMMATRIX& viewMatrix, const XMMATRIX& ProjectionMatrix, const XMVECTOR& color)
 {
-	//Update Constant buffer with WVP Matrix
-	this->cbVsVertexshader->data.mat = this->worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
-	this->cbVsVertexshader->data.mat = XMMatrixTranspose(this->cbVsVertexshader->data.mat);
-	this->cbVsVertexshader->ApplyChanges();
-	this->deviceContext->VSSetConstantBuffers(0, 1, this->cbVsVertexshader->GetAddressOf());
-
-	this->deviceContext->IASetIndexBuffer(this->indexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-	
-	UINT offset = 0;
-
-	this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), vertexBuffer.StridePtr(), &offset);
-
-	//this->deviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	this->deviceContext->DrawIndexed(indexBuffer.BufferSize(), 0, 0);
+	shape->Draw(worldMatrix * scaleMatrix, viewMatrix, ProjectionMatrix, color);
 }
 
 
@@ -125,6 +48,26 @@ const XMVECTOR& SphereObject::GetRotationVector() const
 const XMFLOAT3& SphereObject::GetRotationFloat3() const
 {
 	return this->rot;
+}
+
+void SphereObject::SetScale(float scale)
+{
+	this->scaleMatrix = XMMatrixScaling(scale, scale, scale);
+}
+
+void SphereObject::SetScaleX(float scale)
+{
+	this->scaleMatrix = XMMatrixScaling(scale, 1.0f, 1.0f);
+}
+
+void SphereObject::SetScaleY(float scale)
+{
+	this->scaleMatrix = XMMatrixScaling(1.0f, scale, 1.0f);
+}
+
+void SphereObject::SetScaleZ(float scale)
+{
+	this->scaleMatrix = XMMatrixScaling(1.0f, 1.0f, scale);
 }
 
 void SphereObject::SetPosition(const XMVECTOR& pos)

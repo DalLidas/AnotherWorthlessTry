@@ -40,28 +40,24 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border)
 
 	skyBox.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
 
-	//Draw Corners
-	for (int x = 0; x < 2; ++x) {
-		for (int y = 0; y < 2; ++y) {
-			for (int z = 0; z < 2; ++z) {
-				cubeObject.SetPosition(x*border.x, y * border.y, z * border.z);
-				cubeObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
-			}
-		}
-	}
+	////Draw Corners
+	//for (int x = 0; x < 2; ++x) {
+	//	for (int y = 0; y < 2; ++y) {
+	//		for (int z = 0; z < 2; ++z) {
+	//			cubeObject.SetPosition(x*border.x, y * border.y, z * border.z);
+	//			cubeObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+	//		}
+	//	}
+	//}
 
 	//Draw Object
 	for (auto point = points.begin(); point != points.end(); ++point) {
 		//tileObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix
-		rhombObject.SetPosition(point->pointPos);
-		rhombObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
-	
-		//sphereObject.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
+		sphereObject.SetPosition(point->pointPos);
+		sphereObject.SetScale(point->radius/4.0f);
+
+		sphereObject.Draw(camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::White);
 	}
-	//m_shape->Draw(XMMatrixIdentity(), camera.GetViewMatrix(), camera.GetProjectionMatrix());
-
-
-
 	
 
 	//Draw Text
@@ -265,8 +261,7 @@ bool GFX::InitializeScene()
 	cubeObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 	skyBox.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 
-	m_shape = GeometricPrimitive::CreateSphere(this->deviceContext.Get());
-	//sphereObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+	sphereObject.Initialize(this->deviceContext.Get());
 
 
 	//Initialize Constant Buffer(s)

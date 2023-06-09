@@ -7,19 +7,26 @@
 #include "..//VertexBuffer.h"
 #include "..//Vertex.h"
 
+#include <GeometricPrimitive.h>
+
+
 using namespace DirectX;
 
 class SphereObject {
 public:
-	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader);
+	bool Initialize(ID3D11DeviceContext* deviceContext);
 
-	void Draw(const XMMATRIX& viewProjectionMatrix);
+	void Draw(const XMMATRIX& viewMatrix, const XMMATRIX& ProjectionMatrix, const XMVECTOR& color);
 
 	const XMVECTOR& GetPositionVector() const;
 	const XMFLOAT3& GetPositionFloat3() const;
 	const XMVECTOR& GetRotationVector() const;
 	const XMFLOAT3& GetRotationFloat3() const;
 
+	void SetScale(float scale);
+	void SetScaleX(float scale);
+	void SetScaleY(float scale);
+	void SetScaleZ(float scale);
 	void SetPosition(const XMVECTOR& pos);
 	void SetPosition(const XMFLOAT3& pos);
 	void SetPosition(float x, float y, float z);
@@ -39,18 +46,14 @@ public:
 	const XMVECTOR& GetLeftVector();
 
 private:
-	std::vector<Vertex> CreateSphereVertex();
-	//DWORD CreateSphereIndex();
 	void UpdateWorldMatrix();
 
-	ID3D11Device* device = nullptr;
 	ID3D11DeviceContext* deviceContext = nullptr;
-	ConstantBuffer<CB_VS_vertexshader>* cbVsVertexshader = nullptr;
 
-	VertexBuffer<Vertex> vertexBuffer;
-	IndexBuffer indexBuffer;
+	std::unique_ptr<DirectX::GeometricPrimitive> shape;
 
 	XMMATRIX worldMatrix = XMMatrixIdentity();
+	XMMATRIX scaleMatrix = XMMatrixIdentity();
 
 	XMVECTOR posVector;
 	XMVECTOR rotVector;
