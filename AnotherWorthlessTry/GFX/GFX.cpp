@@ -82,22 +82,39 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, 
 	spriteFont->DrawString(spriteBatch.get(), StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 	spriteBatch->End();
 
-
-
 	
 	// Start the Dear ImGui frame
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	//Create ImGui Test Window
-	ImGui::Begin("Configuration Window");
 
-	ImGui::Text("Hello, world %d", 123);
+	//Create ImGui Test Window
+	bool my_tool_active = true;
+	ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+			if (ImGui::MenuItem("Close", "Ctrl+W")) { my_tool_active = false; }
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+	//ImGui::BeginMainMenuBar();
+	//ImGui::BeginMenu("Scene Settings", true);
+	ImGui::Checkbox("Colide dicrement on/off", &imGuiMsg.bounceDicrimentState);
+	//ImGui::EndMenu();
+	//ImGui::EndMainMenuBar();
 
 
 	if (imGuiMsg.createState) imGuiMsg.createState = false;
 	if (ImGui::Button("Create point"))
 		imGuiMsg.createState = true;
+
+
 	//ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
 	//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
 

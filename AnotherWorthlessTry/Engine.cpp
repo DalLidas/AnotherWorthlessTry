@@ -95,10 +95,13 @@ void Engine::Update(BindMSG& imGuiMsg)
 
     //Scene
     if (imGuiMsg.createState) {
-        scene.createPoint(scene.GetPointOfGod(), DirectX::XMFLOAT3{ (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f }, DirectX::XMFLOAT3{});
+        scene.createPoint(scene.GetPointOfGod(), DirectX::XMFLOAT3{ (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f }, DirectX::XMFLOAT3{0.0f, -0.001f, 0.0f});
     }
     
     //Physics
+    //physics.SetStates(true, true);
+    physics.SetBounceDicrement(20.0f);
+    physics.SetAirResistanceDicrement(20.0f);
     physics.SetDeltaTime(dt);   
 
     for (size_t i = 0; i < this->scene.GetPoints().size(); ++i) {
@@ -117,8 +120,8 @@ void Engine::Update(BindMSG& imGuiMsg)
                         std::pair<Point, Point> bufPointPair{};
                         bufPointPair = physics.BounceFromObject(this->scene.GetPoints().at(i), this->scene.GetPoints().at(j));
 
-                        bufPoint = physics.Move(bufPointPair.first, 10);
-                        this->scene.SetPoint(physics.Move(bufPointPair.second, 10), j);
+                        bufPoint = physics.Move(bufPointPair.first);
+                        this->scene.SetPoint(physics.Move(bufPointPair.second), j);
                     }
                 }
             }

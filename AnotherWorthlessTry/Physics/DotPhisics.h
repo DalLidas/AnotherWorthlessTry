@@ -21,6 +21,8 @@ public:
 	std::pair<Point, Point> BounceFromObject(const Point& point1, const Point& point2);
 	Point BounceFromBorder(const Point& point, int borderSide);
 
+	DirectX::XMFLOAT3 BounceDicrement(DirectX::XMFLOAT3 velosity);
+
 	void SetStates(bool bounceDicrimentState = false, bool airResistanceState = false);
 	void SetBounceDicrement(float newBounceDicrement);
 	void SetAirResistanceDicrement(float newairResistanceDicrement);
@@ -30,8 +32,8 @@ private:
 
 	bool  airResistanceState = false;
 	bool  bounceDicrimentState = false;
-	float bounceDicrement = 0.01f;
-	float airResistanceDicrement = 0.01f;
+	float bounceDicrement = 99.0f;
+	float airResistanceDicrement = 25.0f;
 
 	enum borderSide {
 		topX = 1,

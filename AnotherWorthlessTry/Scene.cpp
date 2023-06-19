@@ -10,7 +10,14 @@ Scene::Scene()
 
 	this->points.push_back(p);
 
-	
+	p.radius = 1;
+	p.pointPos = DirectX::XMFLOAT3{ 15.9f, 1.1f, 1.1f };
+	p.velosity = DirectX::XMFLOAT3{ -0.0032f, 0.0f, 0.0f };
+	p.acceleration = DirectX::XMFLOAT3{ 0.0f, -0.001f, 0.0f };
+
+	this->points.push_back(p);
+
+	/*
 	p.radius = 1;
 	p.pointPos = DirectX::XMFLOAT3{ 4.1f, 18.9f, 4.1f };
 	p.velosity = DirectX::XMFLOAT3{ 0.0f, 0.0032f, 0.0f };
@@ -23,7 +30,7 @@ Scene::Scene()
 	p.velosity = DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0032f };
 	p.acceleration = DirectX::XMFLOAT3{ 0.0f, -0.001f, 0.0f };
 
-	this->points.push_back(p);
+	this->points.push_back(p);*/
 }
 
 std::vector<Point> Scene::GetPoints() const

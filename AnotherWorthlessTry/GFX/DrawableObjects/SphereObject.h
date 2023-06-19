@@ -1,12 +1,5 @@
 #pragma once
 
-#include "vector"
-
-#include "..//ConstantBuffer.h"
-#include "..//IndexBuffer.h"
-#include "..//VertexBuffer.h"
-#include "..//Vertex.h"
-
 #include <GeometricPrimitive.h>
 
 

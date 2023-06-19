@@ -36,7 +36,7 @@ private:
 	XMVECTOR posVector;
 	XMVECTOR rotVector;
 	XMFLOAT3 pos;
-	XMFLOAT3 rot;
+	XMFLOAT3 _rot;
 	XMMATRIX viewMatrix;
 	XMMATRIX projectionMatrix;
 
