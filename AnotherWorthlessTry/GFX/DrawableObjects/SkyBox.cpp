@@ -84,9 +84,9 @@ const XMFLOAT3& SkyBox::GetPositionFloat3() const
 	return this->pos;
 }
 
-void SkyBox::SetScale(float scale)
+void SkyBox::SetScale(const XMFLOAT3& scale)
 {
-	this->scaleMatrix = XMMatrixScaling(scale, scale, scale);
+	this->scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
 }
 
 void SkyBox::SetScaleX(float scale)

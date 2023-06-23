@@ -60,7 +60,7 @@ void Engine::Update(BindMSG& imGuiMsg_)
         }
     }
 
-    const float cameraSpeed = 0.006f;
+    const float cameraSpeed = 0.01f;
 
     if (keyboard.KeyIsPressed('W'))
     {
@@ -88,55 +88,89 @@ void Engine::Update(BindMSG& imGuiMsg_)
     }
 
     //ReadImGuiMsg
+    scene.SetSceneBorder(imGuiMsg_.sceneBorder);
     scene.SetPointOfGod(imGuiMsg_.pointOfGod);
-    physics.SetStates(imGuiMsg_.bounceDicrimentState, imGuiMsg_.airResistanceState);
+    physics.SetStates(imGuiMsg_.gAccelerationState, imGuiMsg_.bounceDicrimentState, imGuiMsg_.airResistanceState);
     physics.SetBounceDicrement(imGuiMsg_.bounceDicrement);
     physics.SetAirResistanceDicrement(imGuiMsg_.airResistanceDicrement);
+    float movMultiplier = 0.001f * imGuiMsg_.movMultiplier;
+    float accMultiplier = 0.001f * imGuiMsg_.accMultiplier;
+    float CreatedAccMultiplier = imGuiMsg_.CreatedAccMultiplier;
 
-    //Scene
+    //Scene events
     if (imGuiMsg_.createRandomState) {
-        scene.CreatePoint(scene.GetPointOfGod(), DirectX::XMFLOAT3{ (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f }, DirectX::XMFLOAT3{0.0f, -0.001f, 0.0f});
+        scene.CreatePoint(
+            1.0f,
+            scene.GetPointOfGod(),
+            DirectX::XMFLOAT3{ (rand() % 100 - 50) / 1000.0f, (rand() % 100 - 50) / 1000.0f, (rand() % 100 - 50) / 1000.0f },
+            DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f }
+        );
     }
 
     if (imGuiMsg_.createState) {
-        scene.CreatePoint(scene.GetPointOfGod(), imGuiMsg_.point.velosity, imGuiMsg_.point.acceleration);
+        scene.CreatePoint(
+            imGuiMsg_.point.radius,
+            scene.GetPointOfGod(),
+            imGuiMsg_.point.velosity,
+            imGuiMsg_.point.acceleration,
+            imGuiMsg_.point.moveState,
+            imGuiMsg_.point.createGravityState
+        );
     }
-    
+
     if (imGuiMsg_.destroyState) {
         scene.DestroyAllPoint();
     }
-    
-    //Physics
-    physics.SetDeltaTime(dt);   
+
+    //Physics events
+    physics.SetDeltaTime(dt);
+    physics.SetSceneBorder(scene.GetSceneBorder());
 
     if (imGuiMsg_.phsicsState) {
         for (size_t i = 0; i < this->scene.GetPoints().size(); ++i) {
-            Point bufPoint{};
-            int colideBorderSide = 0;
-            bufPoint = physics.Move(this->scene.GetPoints().at(i), 2);
+            if (this->scene.GetPoints().at(i).moveState) {
+                Point bufPoint{};
+                DirectX::XMFLOAT3 resultBufAcc{0, 0, 0};
+                int colideBorderSide = 0;
+                bufPoint = physics.Move(this->scene.GetPoints().at(i), movMultiplier);
 
-            colideBorderSide = physics.BorderCollision(bufPoint);
-            if (colideBorderSide != 0) {
-                bufPoint = physics.BounceFromBorder(bufPoint, colideBorderSide);
-            }
-            else {
-                for (size_t j = 0; j < this->scene.GetPoints().size(); ++j) {
-                    if (i != j) {
-                        if (physics.ObjectCollision(bufPoint, this->scene.GetPoints().at(j))) {
-                            std::pair<Point, Point> bufPointPair{};
-                            bufPointPair = physics.BounceFromObject(this->scene.GetPoints().at(i), this->scene.GetPoints().at(j));
+                colideBorderSide = physics.BorderCollision(bufPoint);
+                if (colideBorderSide != 0) {
+                    bufPoint = physics.BounceFromBorder(bufPoint, colideBorderSide);
+                }
+                else {
+                    for (size_t j = 0; j < this->scene.GetPoints().size(); ++j) {
+                        DirectX::XMFLOAT3 bufAcc{};
+                        if (i != j) {
+                            if (physics.ObjectCollision(bufPoint, this->scene.GetPoints().at(j))) {
+                                std::pair<Point, Point> bufPointPair{};
+                                bufPointPair = physics.BounceFromObject(this->scene.GetPoints().at(i), this->scene.GetPoints().at(j));
 
-                            bufPoint = physics.Move(bufPointPair.first);
-                            this->scene.SetPoint(physics.Move(bufPointPair.second), j);
+                                bufPoint = physics.Move(bufPointPair.first, movMultiplier);
+                                if (!this->scene.GetPoints().at(i).moveState) this->scene.SetPoint(physics.Move(bufPointPair.second, movMultiplier), j);
+                            }
+                            if (this->scene.GetPoints().at(j).createGravityState) {
+                                bufAcc = physics.CalcAcceleration(this->scene.GetPoints().at(i), this->scene.GetPoints().at(j), CreatedAccMultiplier);
+                                resultBufAcc.x += bufAcc.x;
+                                resultBufAcc.y += bufAcc.y;
+                                resultBufAcc.z += bufAcc.z;
+                            }
                         }
                     }
-                }
-            }
 
-            this->scene.SetPoint(bufPoint, i);
-            this->scene.SetPoint(physics.Accelerate(bufPoint), i);
+                }
+
+                bufPoint.acceleration.x = this->scene.GetPoints().at(i).acceleration.x + resultBufAcc.x;
+                bufPoint.acceleration.y = this->scene.GetPoints().at(i).acceleration.y + resultBufAcc.y;
+                bufPoint.acceleration.z = this->scene.GetPoints().at(i).acceleration.z + resultBufAcc.z;
+
+                this->scene.SetPoint(bufPoint, i);
+                this->scene.SetPoint(physics.Accelerate(bufPoint, accMultiplier), i);
+
+            }
         }
-    }    
+
+    }
 
 #ifdef INPUT_DEBUG_MSG
     while (!keyboard.CharBufferIsEmpty()) {
@@ -196,5 +230,5 @@ void Engine::Update(BindMSG& imGuiMsg_)
 
 void Engine::RenderFrame(BindMSG& imGuiMsg_)
 {
-    gfx.RenderFrame(scene.GetPoints(), scene.GetSceneBorder(), imGuiMsg_);
+    gfx.RenderFrame(scene.GetPoints(), imGuiMsg_);
 }

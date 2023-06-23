@@ -16,7 +16,7 @@ public:
 	const XMVECTOR& GetPositionVector() const;
 	const XMFLOAT3& GetPositionFloat3() const;
 
-	void SetScale(float scale);
+	void SetScale(const XMFLOAT3& scale);
 	void SetScaleX(float scale);
 	void SetScaleY(float scale);
 	void SetScaleZ(float scale);

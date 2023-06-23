@@ -12,8 +12,8 @@ Scene::Scene()
 
 	p.radius = 4;
 	p.pointPos = DirectX::XMFLOAT3{ 15.9f, 1.1f, 1.1f };
-	p.velosity = DirectX::XMFLOAT3{ -0.0032f, 0.1f, 0.0f };
-	p.acceleration = DirectX::XMFLOAT3{ 0.0f, -0.001f, 0.0f };
+	p.velosity = DirectX::XMFLOAT3{ -1.0f, 0.0f, 0.0f };
+	p.acceleration = DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f };
 
 	this->points.push_back(p);
 
@@ -48,6 +48,16 @@ DirectX::XMFLOAT3 Scene::GetSceneBorder() const
 	return this->sceneBorder;
 }
 
+bool Scene::IsMoveable(size_t index)
+{
+	return this->points.at(index).moveState;
+}
+
+bool Scene::IsCreateGravity(size_t index)
+{
+	return this->points.at(index).createGravityState;
+}
+
 void Scene::SetPoints(const std::vector<Point>& newPoints)
 {
 	this->points.clear();
@@ -59,7 +69,7 @@ void Scene::SetPoint(const Point& newPoint, size_t index)
 	this->points.at(index) = newPoint;
 }
 
-void Scene::SetPointOfGod(DirectX::XMFLOAT3 newPointOfGod)
+void Scene::SetPointOfGod(const DirectX::XMFLOAT3& newPointOfGod)
 {
 	this->pointOfGod = newPointOfGod;
 }
@@ -91,12 +101,16 @@ void Scene::CreatePoint(const DirectX::XMFLOAT3& pos)
 	this->points.push_back(p);
 }
 
-void Scene::CreatePoint(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& velosity, const DirectX::XMFLOAT3& acceleration)
+void Scene::CreatePoint(float radius, const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& velosity, const DirectX::XMFLOAT3& acceleration, bool moveState, bool createGravityState)
 {
 	Point p;
+	p.radius = radius;
 	p.pointPos = pos;
 	p.velosity = velosity;
 	p.acceleration = acceleration;
+
+	p.moveState = moveState;
+	p.createGravityState = createGravityState;
 
 	this->points.push_back(p);
 }

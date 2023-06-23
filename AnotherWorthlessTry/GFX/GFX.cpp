@@ -26,7 +26,7 @@ bool GFX::Initialize(HWND hwnd, INT width, INT height)
 	return true;
 }
 
-void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, BindMSG& imGuiMsg)
+void GFX::RenderFrame(const std::vector<Point>& points, BindMSG& imGuiMsg)
 {
 	static float bgcolor[] = { 76.0f / 255.0f, 86.0f / 255.0f, 106.0f / 255.0f, 1.0f };
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
@@ -43,8 +43,9 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, 
 	
 
 	//Draw SkyBox
-	skyBox.SetPosition(border.x / 2.0f, border.y / 2.0f, border.z / 2.0f);
-	skyBox.SetScale(border.x);
+	skyBox.SetPosition(imGuiMsg.sceneBorder.x / 2.0f, imGuiMsg.sceneBorder.y / 2.0f, imGuiMsg.sceneBorder.z / 2.0f);
+	skyBox.SetScale(imGuiMsg.sceneBorder);
+
 
 	skyBox.Draw(this->camera.GetViewMatrix() * this->camera.GetProjectionMatrix());
 
@@ -103,39 +104,51 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, 
 	//Set scene settings
 	if (ImGui::CollapsingHeader("Scene settings"))
 	{
-		if (imGuiMsg.createRandomState) imGuiMsg.createRandomState = false;
-		if (ImGui::Button("Create random point"))
-			imGuiMsg.createRandomState = true;
-
 		static float* pog[]{ &imGuiMsg.pointOfGod.x, &imGuiMsg.pointOfGod.y, &imGuiMsg.pointOfGod.z };
-		ImGui::SliderFloat3("Position of spawn point", pog[0],0, border.x);
+		ImGui::SliderFloat3("Position of spawn point", pog[0], 0.0f, imGuiMsg.sceneBorder.x);
 
 		static float* vel[]{ &imGuiMsg.point.velosity.x, &imGuiMsg.point.velosity.y, &imGuiMsg.point.velosity.z };
-		ImGui::SliderFloat3("Velosity of point", vel[0], 0, 1.001f,"%.3f", 11.0f);
+		ImGui::SliderFloat3("Velosity of point", vel[0], -100.0f, 100.0f,"%.3f", 1.0f);
 
 		static float* acc[]{ &imGuiMsg.point.acceleration.x, &imGuiMsg.point.acceleration.y, &imGuiMsg.point.acceleration.z };
-		ImGui::SliderFloat3("Acceleration of point", acc[0], 0, 1.001f, "%.3f", 11.0f);
+		ImGui::SliderFloat3("Acceleration of point", acc[0], -100.0f, 100.0f, "%.3f", 1.0f);
+
+		ImGui::InputFloat("Radius", &imGuiMsg.point.radius, 0.1f, 1.0f, 1);
+
+		ImGui::Checkbox("Moveable", &imGuiMsg.point.moveState);
+		ImGui::Checkbox("Create gravity", &imGuiMsg.point.createGravityState);
 
 		if (imGuiMsg.createState) imGuiMsg.createState = false;
 		if (ImGui::Button("Create point"))
 			imGuiMsg.createState = true;
 
+		if (imGuiMsg.createRandomState) imGuiMsg.createRandomState = false;
+		if (ImGui::Button("Create random point"))
+			imGuiMsg.createRandomState = true;
+
 		if (imGuiMsg.createState) imGuiMsg.destroyState = false;
 		if (ImGui::Button("Delete all points"))
 			imGuiMsg.destroyState = true;
+
+		static float* border[]{ &imGuiMsg.sceneBorder.x, &imGuiMsg.sceneBorder.y, &imGuiMsg.sceneBorder.z };
+		ImGui::SliderFloat3("Scene border", border[0], 0.0f, 100.0f);
 	}
 
 	//Set scphysics settings
 	if (ImGui::CollapsingHeader("Physics settings"))
 	{
 		ImGui::Checkbox("Physics state", &imGuiMsg.phsicsState);
+		ImGui::Checkbox("Gravity state", &imGuiMsg.gAccelerationState);
 
 		ImGui::Checkbox("Colide dicrement state", &imGuiMsg.bounceDicrimentState);
 		ImGui::SliderFloat("dicrement", &imGuiMsg.bounceDicrement, 0.0f, 100.0f);
 
 		ImGui::Checkbox("Air resistance state", &imGuiMsg.airResistanceState);
 		ImGui::SliderFloat("Air resistance dicrement", &imGuiMsg.airResistanceDicrement, 0.0f, 100.0f);
-	
+
+		ImGui::InputFloat("Movement multeplier", &imGuiMsg.movMultiplier, 0.1f, 1.0f, 1);
+		ImGui::InputFloat("Acceleration multeplier", &imGuiMsg.accMultiplier, 0.1f, 1.0f, 1); 
+		ImGui::InputFloat("Gravity multeplier", &imGuiMsg.CreatedAccMultiplier, 0.1f, 1.0f, 1);
 	}
 	
 	ImGui::End();
