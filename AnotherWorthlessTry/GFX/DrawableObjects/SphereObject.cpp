@@ -1,11 +1,11 @@
 #include "SphereObject.h"
 
 
-bool SphereObject::Initialize(ID3D11DeviceContext* deviceContext)
+bool SphereObject::Initialize(ID3D11DeviceContext* deviceContext_)
 {
-	this->deviceContext = deviceContext;
+	this->deviceContext = deviceContext_;
 
-	this->shape = shape->CreateSphere(deviceContext);
+	this->shape = shape->CreateSphere(deviceContext_);
 
 	this->SetPosition(0.0f, 0.0f, 0.0f);
 	this->SetRotation(0.0f, 0.0f, 0.0f);
@@ -15,7 +15,7 @@ bool SphereObject::Initialize(ID3D11DeviceContext* deviceContext)
 
 void SphereObject::Draw(const XMMATRIX& viewMatrix, const XMMATRIX& ProjectionMatrix, const XMVECTOR& color)
 {
-	shape->Draw(worldMatrix * scaleMatrix, viewMatrix, ProjectionMatrix, color);
+	shape->Draw(scaleMatrix * worldMatrix, viewMatrix, ProjectionMatrix, color);
 }
 
 
@@ -70,16 +70,16 @@ void SphereObject::SetScaleZ(float scale)
 	this->scaleMatrix = XMMatrixScaling(1.0f, 1.0f, scale);
 }
 
-void SphereObject::SetPosition(const XMVECTOR& pos)
+void SphereObject::SetPosition(const XMVECTOR& pos_)
 {
-	XMStoreFloat3(&this->pos, pos);
-	this->posVector = pos;
+	XMStoreFloat3(&this->pos, pos_);
+	this->posVector = pos_;
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::SetPosition(const XMFLOAT3& pos)
+void SphereObject::SetPosition(const XMFLOAT3& pos_)
 {
-	this->pos = pos;
+	this->pos = pos_;
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->UpdateWorldMatrix();
 }
@@ -91,18 +91,18 @@ void SphereObject::SetPosition(float x, float y, float z)
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::AdjustPosition(const XMVECTOR& pos)
+void SphereObject::AdjustPosition(const XMVECTOR& pos_)
 {
-	this->posVector += pos;
+	this->posVector += pos_;
 	XMStoreFloat3(&this->pos, this->posVector);
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::AdjustPosition(const XMFLOAT3& pos)
+void SphereObject::AdjustPosition(const XMFLOAT3& pos_)
 {
-	this->pos.x += pos.y;
-	this->pos.y += pos.y;
-	this->pos.z += pos.z;
+	this->pos.x += pos_.y;
+	this->pos.y += pos_.y;
+	this->pos.z += pos_.z;
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->UpdateWorldMatrix();
 }
@@ -116,16 +116,16 @@ void SphereObject::AdjustPosition(float x, float y, float z)
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::SetRotation(const XMVECTOR& rot)
+void SphereObject::SetRotation(const XMVECTOR& rot_)
 {
-	this->rotVector = rot;
-	XMStoreFloat3(&this->rot, rot);
+	this->rotVector = rot_;
+	XMStoreFloat3(&this->rot, rot_);
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::SetRotation(const XMFLOAT3& rot)
+void SphereObject::SetRotation(const XMFLOAT3& rot_)
 {
-	this->rot = rot;
+	this->rot = rot_;
 	this->rotVector = XMLoadFloat3(&this->rot);
 	this->UpdateWorldMatrix();
 }
@@ -137,18 +137,18 @@ void SphereObject::SetRotation(float x, float y, float z)
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::AdjustRotation(const XMVECTOR& rot)
+void SphereObject::AdjustRotation(const XMVECTOR& rot_)
 {
-	this->rotVector += rot;
+	this->rotVector += rot_;
 	XMStoreFloat3(&this->rot, this->rotVector);
 	this->UpdateWorldMatrix();
 }
 
-void SphereObject::AdjustRotation(const XMFLOAT3& rot)
+void SphereObject::AdjustRotation(const XMFLOAT3& rot_)
 {
-	this->rot.x += rot.x;
-	this->rot.y += rot.y;
-	this->rot.z += rot.z;
+	this->rot.x += rot_.x;
+	this->rot.y += rot_.y;
+	this->rot.z += rot_.z;
 	this->rotVector = XMLoadFloat3(&this->rot);
 	this->UpdateWorldMatrix();
 }

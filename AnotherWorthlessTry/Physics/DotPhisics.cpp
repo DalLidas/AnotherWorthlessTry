@@ -1,10 +1,10 @@
 #include "DotPhisics.h"
 
-void DotPhysics::Initialize(DirectX::XMFLOAT3 sceneBorder, bool bounceDicrimentState, bool airResistanceState)
+void DotPhysics::Initialize(DirectX::XMFLOAT3 sceneBorder_, bool bounceDicrimentState_, bool airResistanceState_)
 {
-    this->sceneBorder = sceneBorder;
-    this->bounceDicrimentState = bounceDicrimentState;
-    this->airResistanceState = airResistanceState;
+    this->sceneBorder = sceneBorder_;
+    this->bounceDicrimentState = bounceDicrimentState_;
+    this->airResistanceState = airResistanceState_;
 }
 
 void DotPhysics::SetDeltaTime(float dt_)
@@ -84,8 +84,6 @@ std::pair<Point, Point> DotPhysics::BounceFromObject(const Point& point1, const 
     DirectX::XMFLOAT3 v2 = point2.velosity;
     if (bounceDicrimentState) v2 = BounceDicrement(point2.velosity);
 
-
-   ;
 
     return std::pair<Point, Point>(
         Point{
@@ -232,29 +230,21 @@ DirectX::XMFLOAT3 DotPhysics::BounceDicrement(DirectX::XMFLOAT3 velosity)
     float vY = velosity.y - velosity.y * bounceDicrement / 100.0f;
     float vZ = velosity.z - velosity.z * bounceDicrement / 100.0f;
     
-    if (sqrt(pow(vX, 2) + pow(vY, 2) + pow(vZ, 2)) < 0.001){
-        return DirectX::XMFLOAT3{0, 0, 0};
-    }
-    else
-    {
-        return DirectX::XMFLOAT3{vX, vY, vZ};
-    }
-
-    
+    return DirectX::XMFLOAT3{vX, vY, vZ};
 }
 
-void DotPhysics::SetStates(bool dicrimentState, bool airResistanceState)
+void DotPhysics::SetStates(bool dicrimentState_, bool airResistanceState_)
 {
-    this->bounceDicrimentState = dicrimentState;
-    this->airResistanceState = airResistanceState;
+    this->bounceDicrimentState = dicrimentState_;
+    this->airResistanceState = airResistanceState_;
 }
 
-void DotPhysics::SetBounceDicrement(float newBounceDicrement)
+void DotPhysics::SetBounceDicrement(float newBounceDicrement_)
 {
-    this->bounceDicrement = newBounceDicrement;
+    this->bounceDicrement = newBounceDicrement_;
 }
 
-void DotPhysics::SetAirResistanceDicrement(float newAirResistanceDicrement)
+void DotPhysics::SetAirResistanceDicrement(float newAirResistanceDicrement_)
 {
-    this->airResistanceDicrement = newAirResistanceDicrement;
+    this->airResistanceDicrement = newAirResistanceDicrement_;
 }

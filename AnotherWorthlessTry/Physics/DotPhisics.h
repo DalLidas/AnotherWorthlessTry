@@ -7,8 +7,8 @@
 
 class DotPhysics {
 public:
-	void Initialize(DirectX::XMFLOAT3 sceneBorder, bool bounceDicrimentState = false, bool airResistanceState = false);
-	void SetDeltaTime(float dt);
+	void Initialize(DirectX::XMFLOAT3 sceneBorder_, bool bounceDicrimentState_ = false, bool airResistanceState_ = false);
+	void SetDeltaTime(float dt_);
 
 	//std::vector<Point> CalculateScene(const std::vector<Point>& points);
 

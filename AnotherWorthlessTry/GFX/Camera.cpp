@@ -45,10 +45,10 @@ const XMFLOAT3 & Camera::GetRotationFloat3() const
 	return this->_rot;
 }
 
-void Camera::SetPosition(const XMVECTOR & pos)
+void Camera::SetPosition(const XMVECTOR & pos_)
 {
-	XMStoreFloat3(&this->pos, pos);
-	this->posVector = pos;
+	XMStoreFloat3(&this->pos, pos_);
+	this->posVector = pos_;
 	this->UpdateViewMatrix();
 }
 
@@ -59,9 +59,9 @@ void Camera::SetPosition(float x, float y, float z)
 	this->UpdateViewMatrix();
 }
 
-void Camera::AdjustPosition(const XMVECTOR & pos)
+void Camera::AdjustPosition(const XMVECTOR & pos_)
 {
-	this->posVector += pos;
+	this->posVector += pos_;
 	XMStoreFloat3(&this->pos, this->posVector);
 	this->UpdateViewMatrix();
 }

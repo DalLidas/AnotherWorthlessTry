@@ -81,20 +81,8 @@
     <ClCompile Include="GFX\Camera.cpp">
       <Filter>GFX</Filter>
     </ClCompile>
-    <ClCompile Include="GFX\DrawableObjects\TileObject.cpp">
-      <Filter>GFX\DrawableObjects</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GFX\DrawableObjects\RhombObject.cpp">
-      <Filter>GFX\DrawableObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="GFX\DrawableObjects\CubeObject.cpp">
-      <Filter>GFX\DrawableObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="GFX\DrawableObjects\SkyBox.cpp">
-      <Filter>GFX\DrawableObjects</Filter>
     </ClCompile>
     <ClCompile Include="GFX\DrawableObjects\SphereObject.cpp">
       <Filter>GFX\DrawableObjects</Filter>
@@ -119,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="Physics\DotPhisics.cpp">
       <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="GFX\DrawableObjects\SkyBox.cpp">
+      <Filter>GFX\DrawableObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,20 +170,11 @@
     <ClInclude Include="GFX\Camera.h">
       <Filter>GFX</Filter>
     </ClInclude>
-    <ClInclude Include="GFX\DrawableObjects\TileObject.h">
-      <Filter>GFX\DrawableObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GFX\DrawableObjects\RhombObject.h">
-      <Filter>GFX\DrawableObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Point.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GFX\DrawableObjects\CubeObject.h">
-      <Filter>GFX\DrawableObjects</Filter>
     </ClInclude>
     <ClInclude Include="GFX\DrawableObjects\SkyBox.h">
       <Filter>GFX\DrawableObjects</Filter>

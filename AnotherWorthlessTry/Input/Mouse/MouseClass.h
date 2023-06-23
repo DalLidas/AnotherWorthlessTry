@@ -4,16 +4,16 @@
 
 class MouseClass{
 public:
-	void OnLeftPressed(int x, int y);
-	void OnLeftReleased(int x, int y);
-	void OnRightPressed(int x, int y);
-	void OnRightReleased(int x, int y);
-	void OnMiddlePressed(int x, int y);
-	void OnMiddleReleased(int x, int y);
-	void OnWheelUp(int x, int y);
-	void OnWheelDown(int x, int y);
-	void OnMouseMove(int x, int y);
-	void OnMouseMoveRaw(int x, int y);
+	void OnLeftPressed(int x_, int y_);
+	void OnLeftReleased(int x_, int y_);
+	void OnRightPressed(int x_, int y_);
+	void OnRightReleased(int x_, int y_);
+	void OnMiddlePressed(int x_, int y_);
+	void OnMiddleReleased(int x_, int y_);
+	void OnWheelUp(int x_, int y_);
+	void OnWheelDown(int x_, int y_);
+	void OnMouseMove(int x_, int y_);
+	void OnMouseMoveRaw(int x_, int y_);
 
 	bool IsLeftDown();
 	bool IsMiddleDown();

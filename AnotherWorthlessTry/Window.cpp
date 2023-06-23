@@ -1,13 +1,13 @@
 #include "WindowConteiner.h"
 
-BOOL Window::Initialize(WindowContainer* pWindowContainer, HINSTANCE hInstance, std::string windowName, std::string windowClass, INT width, INT height){
-    this->hInstance = hInstance;
-    this->windowName = windowName;
-    this->wWindowName = StringConverter::StringToWide(windowName);
-    this->windowClass = windowClass;
-    this->wWindowClass = StringConverter::StringToWide(windowClass);
-    this->width = width;
-    this->height = height;
+BOOL Window::Initialize(WindowContainer* pWindowContainer, HINSTANCE hInstance_, std::string windowName_, std::string windowClass_, INT width_, INT height_){
+    this->hInstance = hInstance_;
+    this->windowName = windowName_;
+    this->wWindowName = StringConverter::StringToWide(windowName_);
+    this->windowClass = windowClass_;
+    this->wWindowClass = StringConverter::StringToWide(windowClass_);
+    this->width = width_;
+    this->height = height_;
 
     RegisterWindowClass();
 

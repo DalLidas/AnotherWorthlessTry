@@ -19,9 +19,9 @@
 #include "ImGUI\\imgui_impl_dx11.h"
 #include "../BindImGui.h"
 
-#include "DrawableObjects/TileObject.h"
-#include "DrawableObjects/RhombObject.h"
-#include "DrawableObjects/CubeObject.h"
+//#include "DrawableObjects/TileObject.h"
+//#include "DrawableObjects/RhombObject.h"
+//#include "DrawableObjects/CubeObject.h"
 #include "DrawableObjects/SphereObject.h"
 #include "DrawableObjects/SkyBox.h"
 
@@ -47,9 +47,9 @@ private:
 	PixelShader pixelShader;
 	ConstantBuffer<CB_VS_vertexshader> constantBuffer;
 
-	TileObject tileObject;
-	RhombObject rhombObject;
-	CubeObject cubeObject;
+	//TileObject tileObject;
+	//RhombObject rhombObject;
+	//CubeObject cubeObject;
 	SphereObject sphereObject;
 	SkyBox skyBox;
 

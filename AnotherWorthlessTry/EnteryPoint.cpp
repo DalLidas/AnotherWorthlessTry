@@ -14,7 +14,7 @@ int APIENTRY wWinMain(
     UNREFERENCED_PARAMETER(nCmdShow);
 
     Engine engine;
-    engine.Initialize(hInstance, "MyEngine", "MyEngineClass", 900, 700);
+    engine.Initialize(hInstance, "MyEngine", "MyEngineClass", 1200, 700);
 
     while (engine.ProcessMessages()) {
         engine.Update(engine.imGuiMsg);

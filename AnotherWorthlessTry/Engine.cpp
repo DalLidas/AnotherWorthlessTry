@@ -29,7 +29,7 @@ BOOL Engine::ProcessMessages()
     return  this->window.ProcessMessages();
 }
 
-void Engine::Update(BindMSG& imGuiMsg)
+void Engine::Update(BindMSG& imGuiMsg_)
 {
     float dt = static_cast<float>(timer.GetMilisecondsElapsed());
     timer.Restart();
@@ -88,49 +88,55 @@ void Engine::Update(BindMSG& imGuiMsg)
     }
 
     //ReadImGuiMsg
-    scene.SetPointOfGod(imGuiMsg.pointOfGod);
-    physics.SetStates(imGuiMsg.bounceDicrimentState, imGuiMsg.airResistanceDicrement);  
-    physics.SetBounceDicrement(imGuiMsg.bounceDicrement);
-    physics.SetAirResistanceDicrement(imGuiMsg.airResistanceDicrement);
+    scene.SetPointOfGod(imGuiMsg_.pointOfGod);
+    physics.SetStates(imGuiMsg_.bounceDicrimentState, imGuiMsg_.airResistanceState);
+    physics.SetBounceDicrement(imGuiMsg_.bounceDicrement);
+    physics.SetAirResistanceDicrement(imGuiMsg_.airResistanceDicrement);
 
     //Scene
-    if (imGuiMsg.createState) {
-        scene.createPoint(scene.GetPointOfGod(), DirectX::XMFLOAT3{ (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f }, DirectX::XMFLOAT3{0.0f, -0.001f, 0.0f});
+    if (imGuiMsg_.createRandomState) {
+        scene.CreatePoint(scene.GetPointOfGod(), DirectX::XMFLOAT3{ (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f, (rand() % 100 - 50) / 10000.0f }, DirectX::XMFLOAT3{0.0f, -0.001f, 0.0f});
+    }
+
+    if (imGuiMsg_.createState) {
+        scene.CreatePoint(scene.GetPointOfGod(), imGuiMsg_.point.velosity, imGuiMsg_.point.acceleration);
+    }
+    
+    if (imGuiMsg_.destroyState) {
+        scene.DestroyAllPoint();
     }
     
     //Physics
-    //physics.SetStates(true, true);
-    physics.SetBounceDicrement(20.0f);
-    physics.SetAirResistanceDicrement(20.0f);
     physics.SetDeltaTime(dt);   
 
-    for (size_t i = 0; i < this->scene.GetPoints().size(); ++i) {
-        Point bufPoint{};
-        int colideBorderSide = 0;
-        bufPoint = physics.Move(this->scene.GetPoints().at(i), 2);
+    if (imGuiMsg_.phsicsState) {
+        for (size_t i = 0; i < this->scene.GetPoints().size(); ++i) {
+            Point bufPoint{};
+            int colideBorderSide = 0;
+            bufPoint = physics.Move(this->scene.GetPoints().at(i), 2);
 
-        if (colideBorderSide = physics.BorderCollision(bufPoint)) {
-            
-            bufPoint = physics.BounceFromBorder(bufPoint, colideBorderSide);
-        }
-        else {
-            for (size_t j = 0; j < this->scene.GetPoints().size(); ++j) {
-                if (i != j) {
-                    if (physics.ObjectCollision(bufPoint, this->scene.GetPoints().at(j))) {
-                        std::pair<Point, Point> bufPointPair{};
-                        bufPointPair = physics.BounceFromObject(this->scene.GetPoints().at(i), this->scene.GetPoints().at(j));
+            colideBorderSide = physics.BorderCollision(bufPoint);
+            if (colideBorderSide != 0) {
+                bufPoint = physics.BounceFromBorder(bufPoint, colideBorderSide);
+            }
+            else {
+                for (size_t j = 0; j < this->scene.GetPoints().size(); ++j) {
+                    if (i != j) {
+                        if (physics.ObjectCollision(bufPoint, this->scene.GetPoints().at(j))) {
+                            std::pair<Point, Point> bufPointPair{};
+                            bufPointPair = physics.BounceFromObject(this->scene.GetPoints().at(i), this->scene.GetPoints().at(j));
 
-                        bufPoint = physics.Move(bufPointPair.first);
-                        this->scene.SetPoint(physics.Move(bufPointPair.second), j);
+                            bufPoint = physics.Move(bufPointPair.first);
+                            this->scene.SetPoint(physics.Move(bufPointPair.second), j);
+                        }
                     }
                 }
             }
-        }
 
-        this->scene.SetPoint(bufPoint, i);
-        this->scene.SetPoint(physics.Accelerate(bufPoint), i);
-    }
-    
+            this->scene.SetPoint(bufPoint, i);
+            this->scene.SetPoint(physics.Accelerate(bufPoint), i);
+        }
+    }    
 
 #ifdef INPUT_DEBUG_MSG
     while (!keyboard.CharBufferIsEmpty()) {
@@ -188,7 +194,7 @@ void Engine::Update(BindMSG& imGuiMsg)
 #endif // INPUT_DEBUG_MSG
 }
 
-void Engine::RenderFrame(BindMSG& imGuiMsg)
+void Engine::RenderFrame(BindMSG& imGuiMsg_)
 {
-    gfx.RenderFrame(scene.GetPoints(), scene.GetSceneBorder(), imGuiMsg);
+    gfx.RenderFrame(scene.GetPoints(), scene.GetSceneBorder(), imGuiMsg_);
 }

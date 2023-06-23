@@ -36,8 +36,8 @@ private:
 
 	Microsoft::WRL::ComPtr <ID3D11RasterizerState> resterazerState = nullptr;
 
-	VertexBuffer<Vertex> vertexBuffer;
-	IndexBuffer indexBuffer;
+	VertexBuffer<Vertex> vertexBuffer{};
+	IndexBuffer indexBuffer{};
 
 	XMMATRIX worldMatrix = XMMatrixIdentity();
 	XMMATRIX scaleMatrix = XMMatrixIdentity();

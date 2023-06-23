@@ -18,7 +18,7 @@ bool GFX::Initialize(HWND hwnd, INT width, INT height)
 	//Setup ImGui
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
+	//ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplWin32_Init(hwnd);
 	ImGui_ImplDX11_Init(this->device.Get(), this->deviceContext.Get());
 	ImGui::StyleColorsDark();
@@ -28,7 +28,7 @@ bool GFX::Initialize(HWND hwnd, INT width, INT height)
 
 void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, BindMSG& imGuiMsg)
 {
-	float bgcolor[] = { 76.0f / 255.0f, 86.0f / 255.0f, 106.0f / 255.0f, 1.0f };
+	static float bgcolor[] = { 76.0f / 255.0f, 86.0f / 255.0f, 106.0f / 255.0f, 1.0f };
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
 	this->deviceContext->ClearDepthStencilView(this->depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -57,6 +57,11 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, 
 	//		}
 	//	}
 	//}
+
+	//Draw PointOfGod
+	sphereObject.SetPosition(imGuiMsg.pointOfGod);
+	sphereObject.SetScale(0.5f);
+	sphereObject.Draw(camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::DarkSlateGray);
 
 	//Draw Object
 	for (auto point = points.begin(); point != points.end(); ++point) {
@@ -90,41 +95,54 @@ void GFX::RenderFrame(const std::vector<Point>& points, const XMFLOAT3& border, 
 
 	//Create ImGui Test Window
 	bool my_tool_active = true;
-	ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
-	if (ImGui::BeginMenuBar())
+	ImGui::Begin("Menu", &my_tool_active, ImGuiWindowFlags_None);
+
+	//Set background color
+	ImGui::ColorEdit3("Background color", bgcolor);
+
+	//Set scene settings
+	if (ImGui::CollapsingHeader("Scene settings"))
 	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
-			if (ImGui::MenuItem("Close", "Ctrl+W")) { my_tool_active = false; }
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
+		if (imGuiMsg.createRandomState) imGuiMsg.createRandomState = false;
+		if (ImGui::Button("Create random point"))
+			imGuiMsg.createRandomState = true;
+
+		static float* pog[]{ &imGuiMsg.pointOfGod.x, &imGuiMsg.pointOfGod.y, &imGuiMsg.pointOfGod.z };
+		ImGui::SliderFloat3("Position of spawn point", pog[0],0, border.x);
+
+		static float* vel[]{ &imGuiMsg.point.velosity.x, &imGuiMsg.point.velosity.y, &imGuiMsg.point.velosity.z };
+		ImGui::SliderFloat3("Velosity of point", vel[0], 0, 1.001f,"%.3f", 11.0f);
+
+		static float* acc[]{ &imGuiMsg.point.acceleration.x, &imGuiMsg.point.acceleration.y, &imGuiMsg.point.acceleration.z };
+		ImGui::SliderFloat3("Acceleration of point", acc[0], 0, 1.001f, "%.3f", 11.0f);
+
+		if (imGuiMsg.createState) imGuiMsg.createState = false;
+		if (ImGui::Button("Create point"))
+			imGuiMsg.createState = true;
+
+		if (imGuiMsg.createState) imGuiMsg.destroyState = false;
+		if (ImGui::Button("Delete all points"))
+			imGuiMsg.destroyState = true;
 	}
 
-	//ImGui::BeginMainMenuBar();
-	//ImGui::BeginMenu("Scene Settings", true);
-	ImGui::Checkbox("Colide dicrement on/off", &imGuiMsg.bounceDicrimentState);
-	//ImGui::EndMenu();
-	//ImGui::EndMainMenuBar();
+	//Set scphysics settings
+	if (ImGui::CollapsingHeader("Physics settings"))
+	{
+		ImGui::Checkbox("Physics state", &imGuiMsg.phsicsState);
 
+		ImGui::Checkbox("Colide dicrement state", &imGuiMsg.bounceDicrimentState);
+		ImGui::SliderFloat("dicrement", &imGuiMsg.bounceDicrement, 0.0f, 100.0f);
 
-	if (imGuiMsg.createState) imGuiMsg.createState = false;
-	if (ImGui::Button("Create point"))
-		imGuiMsg.createState = true;
-
-
-	//ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
-	//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-
+		ImGui::Checkbox("Air resistance state", &imGuiMsg.airResistanceState);
+		ImGui::SliderFloat("Air resistance dicrement", &imGuiMsg.airResistanceDicrement, 0.0f, 100.0f);
+	
+	}
+	
 	ImGui::End();
 	//Assemble Together Draw Data
 	ImGui::Render();
 	//Render Draw Data
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	
 
 
 	this->swapChain->Present(0, NULL);
@@ -309,9 +327,9 @@ bool GFX::InitializeShaders()
 bool GFX::InitializeScene()
 {
 
-	tileObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
-	rhombObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
-	cubeObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+	//tileObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+	//rhombObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
+	//cubeObject.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 	skyBox.Initialize(this->device.Get(), this->deviceContext.Get(), this->constantBuffer);
 
 	sphereObject.Initialize(this->deviceContext.Get());

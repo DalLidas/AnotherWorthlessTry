@@ -30,11 +30,11 @@ public:
 		return buffer.GetAddressOf();
 	}
 
-	HRESULT Initialize(ID3D11Device *device, ID3D11DeviceContext * deviceContext)
+	HRESULT Initialize(ID3D11Device *device, ID3D11DeviceContext * deviceContext_)
 	{
-		this->deviceContext = deviceContext;
+		this->deviceContext = deviceContext_;
 
-		D3D11_BUFFER_DESC desc;
+		D3D11_BUFFER_DESC desc {0};
 		desc.Usage = D3D11_USAGE_DYNAMIC;
 		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;

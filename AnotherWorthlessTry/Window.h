@@ -24,8 +24,8 @@ public:
 private:
     void RegisterWindowClass();
 
-    HWND handle = NULL;
-    HINSTANCE hInstance = NULL;
+    HWND handle{ 0 };
+    HINSTANCE hInstance{ 0 };
 
     std::string windowName = "";
     std::wstring wWindowName = L"";

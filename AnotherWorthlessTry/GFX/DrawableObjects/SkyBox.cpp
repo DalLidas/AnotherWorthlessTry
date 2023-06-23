@@ -1,10 +1,10 @@
 #include "SkyBox.h"
 
-bool SkyBox::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader)
+bool SkyBox::Initialize(ID3D11Device* device_, ID3D11DeviceContext* deviceContext_, ConstantBuffer<CB_VS_vertexshader>& cbVsVertexshader_)
 {
-	this->device = device;
-	this->deviceContext = deviceContext;
-	this->cbVsVertexshader = &cbVsVertexshader;
+	this->device = device_;
+	this->deviceContext = deviceContext_;
+	this->cbVsVertexshader = &cbVsVertexshader_;
 
 	XMFLOAT3 Gray{ 134.0f / 255.0f, 142.0f / 255.0f, 150.0f / 255.0f };
 	XMFLOAT3 DarkGray{ 33.0f / 255.0f, 37.0f / 255.0f, 41.0f / 255.0f };
@@ -104,16 +104,16 @@ void SkyBox::SetScaleZ(float scale)
 	this->scaleMatrix = XMMatrixScaling(1.0f, 1.0f, scale);
 }
 
-void SkyBox::SetPosition(const XMVECTOR& pos)
+void SkyBox::SetPosition(const XMVECTOR& pos_)
 {
-	XMStoreFloat3(&this->pos, pos);
-	this->posVector = pos;
+	XMStoreFloat3(&this->pos, pos_);
+	this->posVector = pos_;
 	this->UpdateWorldMatrix();
 }
 
-void SkyBox::SetPosition(const XMFLOAT3& pos)
+void SkyBox::SetPosition(const XMFLOAT3& pos_)
 {
-	this->pos = pos;
+	this->pos = pos_;
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->UpdateWorldMatrix();
 }
@@ -125,18 +125,18 @@ void SkyBox::SetPosition(float x, float y, float z)
 	this->UpdateWorldMatrix();
 }
 
-void SkyBox::AdjustPosition(const XMVECTOR& pos)
+void SkyBox::AdjustPosition(const XMVECTOR& pos_)
 {
-	this->posVector += pos;
+	this->posVector += pos_;
 	XMStoreFloat3(&this->pos, this->posVector);
 	this->UpdateWorldMatrix();
 }
 
-void SkyBox::AdjustPosition(const XMFLOAT3& pos)
+void SkyBox::AdjustPosition(const XMFLOAT3& pos_)
 {
-	this->pos.x += pos.y;
-	this->pos.y += pos.y;
-	this->pos.z += pos.z;
+	this->pos.x += pos_.y;
+	this->pos.y += pos_.y;
+	this->pos.z += pos_.z;
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->UpdateWorldMatrix();
 }
